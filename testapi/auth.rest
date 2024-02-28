@@ -1,0 +1,46 @@
+
+# Create a User
+POST http://localhost:8080/api/user HTTP/1.1
+Content-Type: application/json
+
+{
+
+  "username": "sajidali22",
+  "email": "sajidali12@gmail.com",
+  "gender": "Male",
+  "password": "secretpassword",
+  "userType":"Vendor",
+  "isactive": true
+}
+
+
+### 
+#logout  User 
+GET  http://localhost:8080/api/auth/logout HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiIyNDgxMzRkYS04NmFiLTQ0OGYtODg0ZS05ODQ5MWY0N2NhNzYiLCJmaXJzdG5hbWUiOm51bGwsImxhc3RuYW1lIjpudWxsLCJ1c2VybmFtZSI6InNhamlkYWxpMiIsImVtYWlsIjoic2FqaWRhbGkyQGdtYWlsLmNvbSIsInBob25lIjoiMTIzLTQ1Ni03ODkwIiwiZ2VuZGVyIjoiTWFsZSIsInBhc3N3b3JkIjoiJDJiJDEwJDluMTZ4TmlXRGgycUZxcVU0TGZnNGUuN09HNTNEbTlza2J0LnNDTkVWektZUGQwZDkxY01LIiwicmVnaXN0cmF0aW9uZGF0ZSI6IjIwMjQtMDItMTZUMDY6MDY6MjguMTYzWiIsImxhc3Rsb2dpbmRhdGUiOiIyMDI0LTAyLTE2VDA2OjA2OjI4LjE2M1oiLCJ1c2VydHlwZSI6IlZlbmRvciIsImlzYWN0aXZlIjp0cnVlLCJpYXQiOjE3MDgwNjQyODAsImV4cCI6MTcwODA3MTQ4MH0.UM-S7rpnNB8pFVprgNuPUlPlZLZPjC5iRUM8e9sdI28
+
+###
+# Get all Users
+GET http://localhost:8080/api/user HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiIyNDgxMzRkYS04NmFiLTQ0OGYtODg0ZS05ODQ5MWY0N2NhNzYiLCJmaXJzdG5hbWUiOm51bGwsImxhc3RuYW1lIjpudWxsLCJ1c2VybmFtZSI6InNhamlkYWxpMiIsImVtYWlsIjoic2FqaWRhbGkyQGdtYWlsLmNvbSIsInBob25lIjoiMTIzLTQ1Ni03ODkwIiwiZ2VuZGVyIjoiTWFsZSIsInBhc3N3b3JkIjoiJDJiJDEwJDluMTZ4TmlXRGgycUZxcVU0TGZnNGUuN09HNTNEbTlza2J0LnNDTkVWektZUGQwZDkxY01LIiwicmVnaXN0cmF0aW9uZGF0ZSI6IjIwMjQtMDItMTZUMDY6MDY6MjguMTYzWiIsImxhc3Rsb2dpbmRhdGUiOiIyMDI0LTAyLTE2VDA2OjA2OjI4LjE2M1oiLCJ1c2VydHlwZSI6IlZlbmRvciIsImlzYWN0aXZlIjp0cnVlLCJpYXQiOjE3MDgwNjQyODAsImV4cCI6MTcwODA3MTQ4MH0.UM-S7rpnNB8pFVprgNuPUlPlZLZPjC5iRUM8e9sdI28
+
+
+
+### Login 
+POST http://localhost:8080/api/auth/login HTTP/1.1
+Content-Type: application/json
+
+
+{
+    "email":"sajidali2@gmail.com",
+    "password":"secretpassword"
+
+}
+
+
+
+###
+#get all vendors
+GET http://localhost:8080/api/vendors HTTP/1.1
