@@ -1,8 +1,6 @@
-import express from 'express';
+
 import pool from "../db/connection.js";
-import bcrypt from 'bcrypt';
 import authenticateToken from '../middlewares/authorization.js';
-import jwtTokens from '../utils/jwt-helper.js';
 import router from './auth.js';
 
 // Get All vendors
@@ -103,8 +101,6 @@ router.post('/',authenticateToken, async (req, res) => {
 
 
 // Delete a Vendor From database
-
-
 router.delete('/:id', authenticateToken, async (req, res) => {
     try {
         // const data = await pool.query('DELETE FROM public.vendor_profile WHERE vendorprofileid = $1', [req.params.id]);
@@ -116,18 +112,10 @@ router.delete('/:id', authenticateToken, async (req, res) => {
 
 
 
-// // Get Vendor By Email
-// router.get('/:email', authenticateToken, async (req, res) => {
-//     try {
-//         const data = await pool.query('SELECT * FROM public.vendor_profile WHERE email = $1', [req.params.email]);
-//         res.status(200).json({ data: data.rows });
-//     } catch (e) {
-//         res.status(500).json({ message: e.message });
-//     }
-// });
 
 // Get Vendor by Business Name
 router.get('/business/:businessname', authenticateToken, async (req, res) => {
+  // 
     try {
         const data = await pool.query('SELECT * FROM public.vendor_profile WHERE businessname = $1', [req.params.businessname]);
         res.status(200).json({ data: data.rows });
