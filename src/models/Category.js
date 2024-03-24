@@ -32,7 +32,7 @@ const CategoryModel = (sequelize) => {
     },
     parentcategoryid: {
       type: DataTypes.UUID,
-      references: { model: 'category', key: 'categoryid' }
+      references: { model: 'categories', key: 'categoryid' }
     }
   }, {
     sequelize,

@@ -23,7 +23,6 @@ const CustomerSearchHistoryModel = (sequelize) => {
    */
   CustomerSearchHistory.init({
     searchID: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-    customerProfileID: { type: DataTypes.UUID, allowNull: false, references: { model: 'customer_profile', key: 'customerprofileid' } },
     searchParameters: { type: DataTypes.JSONB },
     searchDate: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
   }, {

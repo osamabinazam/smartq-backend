@@ -23,7 +23,6 @@ const CustomerSearchPreferencesModel  = (sequelize) => {
    */
   CustomerSearchPreferences.init({
     preferenceID: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-    customerProfileID: { type: DataTypes.UUID, allowNull: false, references: { model: 'customer_profile', key: 'customerprofileid' } },
     searchRadius: { type: DataTypes.INTEGER },
     preferredCategories: { type: DataTypes.TEXT },
     preferredPriceRange: { type: DataTypes.NUMERIC },

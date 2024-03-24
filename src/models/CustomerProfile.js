@@ -22,7 +22,6 @@ const CustomerProfileModel = (sequelize) => {
    */
   CustomerProfile.init({
     customerprofileid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-    userid: { type: DataTypes.UUID, allowNull: false, references: { model: 'user', key: 'userid' } },
     firstname: { type: DataTypes.STRING(255), allowNull: false },
     lastname: { type: DataTypes.STRING(255), allowNull: false },
     emailaddress: { type: DataTypes.STRING(255), allowNull: false, unique: true },

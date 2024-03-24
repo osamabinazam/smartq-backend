@@ -27,7 +27,6 @@ const EducationModel = (sequelize) => {
     endat: { type: DataTypes.DATEONLY },
     degree: { type: DataTypes.STRING(255) },
     description: { type: DataTypes.TEXT },
-    certificateid: { type: DataTypes.UUID, references: { model: 'certificate', key: 'certificateid' } }
   }, {
     sequelize,
     modelName: 'Education',
