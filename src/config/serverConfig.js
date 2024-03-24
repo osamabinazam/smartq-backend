@@ -4,9 +4,9 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import {dirname, join} from "path";
 import {fileURLToPath} from "url";
-import userRoutes from "../routes/user.js";
-import authRoutes from "../routes/auth.js";
-import vendorRoutes from "../routes/vendor.js";
+// import userRoutes from "../routes/user.js";
+// import authRoutes from "../routes/auth.js";
+// import vendorRoutes from "../routes/vendor.js";
 // import authenticateToken from "../middlewares/authorization";
 
 
@@ -30,9 +30,9 @@ app.use(cookieParser());
 
 // Routes
 app.use('/',express.static(join(__dirname, "public")));
-app.use('/api/users', userRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/vendors', vendorRoutes);
+// app.use('/api/users', userRoutes);
+// app.use('/api/auth', authRoutes);
+// app.use('/api/vendors', vendorRoutes);
 
 export default app;
 
