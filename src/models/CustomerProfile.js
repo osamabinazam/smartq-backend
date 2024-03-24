@@ -1,8 +1,25 @@
-const { Model, DataTypes } = require('sequelize');
+import { Model, DataTypes, Sequelize } from 'sequelize';
 
-module.exports = (sequelize) => {
+/**
+ * 
+ * @param {Sequelize} sequelize 
+ * @returns 
+ */
+const CustomerProfileModel = (sequelize) => {
+
+  /**
+   * Represents a customer profile in the system.
+   * @class CustomerProfile
+   * @extends Model
+   */
   class CustomerProfile extends Model {}
 
+  /**
+   * Initializes the CustomerProfile model with predefined fields and options.
+   * @returns {Model} CustomerProfile model definition.
+   * @param {Object} fields - The fields to define the CustomerProfile model.
+   * @constructor CustomerProfile
+   */
   CustomerProfile.init({
     customerprofileid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
     userid: { type: DataTypes.UUID, allowNull: false, references: { model: 'user', key: 'userid' } },
@@ -11,15 +28,19 @@ module.exports = (sequelize) => {
     emailaddress: { type: DataTypes.STRING(255), allowNull: false, unique: true },
     dateofbirth: { type: DataTypes.DATEONLY },
     preferences: { type: DataTypes.JSONB },
-    contactid: { type: DataTypes.UUID, references: { model: 'contact', key: 'contactid' } },
-    createdat: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
-    updatedat: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
   }, {
     sequelize,
     modelName: 'CustomerProfile',
-    tableName: 'customer_profile',
-    timestamps: false
+    tableName: 'customer_profiles',
+    timestamps: true
   });
 
   return CustomerProfile;
 };
+
+
+/**
+ * Exports the CustomerProfile model function.
+ * @export CustomerProfileModel
+ */
+export default CustomerProfileModel;

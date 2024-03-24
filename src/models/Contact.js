@@ -1,8 +1,25 @@
-const { Model, DataTypes } = require('sequelize');
+import { Model, DataTypes, Sequelize } from 'sequelize';
 
-module.exports = (sequelize) => {
+/**
+ *  Contact model function  - Represents the contact information of a user in the system.
+ * @param {Sequelize} sequelize  - The Sequelize instance for connecting to the database.
+ * @returns  {Model} Contact model definition.
+ */
+const ContactModel = (sequelize) => {
+
+  /**
+   * Represents the contact information of a user in the system.
+   * @class Contact
+   * @extends Model
+   */
   class Contact extends Model {}
 
+  /**
+   * Initializes the Contact model with predefined fields and options.
+   * @returns {Model} Contact model.
+   * @constructor Contact
+   * @param {Object} fields - The fields to define the Contact model.
+   */
   Contact.init({
     contactid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
     userid: { type: DataTypes.UUID, allowNull: false, references: { model: 'user', key: 'userid' } },
@@ -15,9 +32,16 @@ module.exports = (sequelize) => {
   }, {
     sequelize,
     modelName: 'Contact',
-    tableName: 'contact',
-    timestamps: false
+    tableName: 'contacts',
+    timestamps: true
   });
 
   return Contact;
 };
+
+
+/**
+ * Exports the Contact model function.
+ * @export ContactModel
+ */
+export default ContactModel;
