@@ -6,11 +6,8 @@ import dbConfig from "../config/dbConfig.js";
  * Database connection configuration - Represents the connection to the postgres database.
  * @type {Sequelize} 
  * @export db
- * 
  */
 
-
-console.log(dbConfig);
 const db = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
     host: dbConfig.host,
     dialect: dbConfig.dialect,
