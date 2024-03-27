@@ -4,13 +4,11 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import {dirname, join} from "path";
 import {fileURLToPath} from "url";
-// import userRoutes from "../routes/user.js";
-// import authRoutes from "../routes/auth.js";
-// import vendorRoutes from "../routes/vendor.js";
-// import authenticateToken from "../middlewares/authorization";
-
-
+import authRoutes from "../routes/AuthRoutes.js";
+import userRoutes from "../routes/UserRoutes.js";
+import imageUploadsRoutes from "../routes/imageUploadsRoutes.js";
 dotenv.config();
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -30,9 +28,9 @@ app.use(cookieParser());
 
 // Routes
 app.use('/',express.static(join(__dirname, "public")));
-// app.use('/api/users', userRoutes);
-// app.use('/api/auth', authRoutes);
-// app.use('/api/vendors', vendorRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/images', imageUploadsRoutes);
 
 export default app;
 
