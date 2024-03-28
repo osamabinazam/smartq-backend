@@ -25,7 +25,13 @@ const saveImageToFile = (buffer, filename) => {
 // Middleware for image processing
 const imageProcessingMiddleware = async (req, res, next) => {
     try {
+         if (!req.files || Object.keys(req.files).length === 0) {
+            return res.status(400).send({ message: 'No files were uploaded.' });
+        }
+
+
         const files = req.files;
+        console.log("Files : ", files)
         await Promise.all(
             Object.keys(files).map(async (key) => {
                 await Promise.all(
@@ -52,6 +58,7 @@ const imageProcessingMiddleware = async (req, res, next) => {
         );
         next();
     } catch (error) {
+        console.log(error);
         res.status(500).send({ message: 'Error processing images', error: error.toString() });
     }
 };
