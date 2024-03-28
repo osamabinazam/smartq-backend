@@ -7,9 +7,18 @@ import {fileURLToPath} from "url";
 import authRoutes from "../routes/AuthRoutes.js";
 import userRoutes from "../routes/UserRoutes.js";
 import imageUploadsRoutes from "../routes/imageUploadsRoutes.js";
+import fs from "fs";
+import path from "path";
 dotenv.config();
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const imageDirectory = path.join(__dirname, "../../public/images");
+if (!fs.existsSync(imageDirectory)) {
+  fs.mkdirSync(imageDirectory, { recursive: true });
+  console.log("Directory Created Successfully ");
+}
+
+
 const app = express();
 const PORT = process.env.PORT || 8080;
 
