@@ -1,6 +1,7 @@
 import db from "../models/index.js";
 import bcrypt from 'bcrypt';
 import jwtTokens from '../utils/jwt-helper.js';
+import ImageService from "../services/ImageService.js";
 
 
 /**
@@ -8,72 +9,56 @@ import jwtTokens from '../utils/jwt-helper.js';
  */
 
 const User = db.UserModel;
+const Image = db.ImageModel;
 
 
 /**
  * Authenticate the user login
  */
 const login = async (req, res) => {
-
-
-    if (!req.body){
-        return res.status(400).send("Request body is missing")
+    if (!req.body) {
+        return res.status(400).send("Request body is missing");
     }
 
-    const username_email =  req.body.username ? req.body.username : req.body.email;
- 
+    const username_email = req.body.username || req.body.email;
 
-    // find the user by username or email
-   User.findOne({
-        where: {
-            [db.Sequelize.Op.or]: [{ username: username_email }, { email: username_email }]
-        }
-    }).then((user) => {
-
-        // check if the user exists
-        if (!user){
-            return res.status(404).send("User not found")
-        }
-
-        // compare the password
-        bcrypt.compare(req.body.password, user.password).then((validPassword) => {
-
-            // check if the password is valid
-            if (!validPassword){
-                return res.status(401).send("Invalid password")
+    try {
+        // Find the user by username or email
+        const user = await User.findOne({
+            where: {
+                [db.Sequelize.Op.or]: [{ username: username_email }, { email: username_email }]
             }
-
-            // update the last login date
-            const currentDate = new Date();
-            User.update({
-                lastlogin: currentDate,
-            }, { where : { userid: user.userid } }
-            ).then((updatedUser) => {
-
-                // check if the last login date was updated
-                if (!updatedUser){
-                    return res.status(500).send("Error while updating the last login date")
-                }
-            }).catch((err) => {
-                return res.status(500).send("Error while updating the last login date")
-            });
-
-            // remove the password from the user data for security reasons
-            user.password = undefined;
-
-            // generate the jwt tokens
-            const tokens = jwtTokens(user.dataValues);
-        
-            // send the tokens and the user data
-            res.status(200).send({tokens: tokens, user: user.dataValues});
-        }).catch((err) => {
-
-            return res.status(500).send("Error while comparing the passwords")
         });
-    }).catch((err) => {
-        return res.status(500).send("Error while finding the user")        
-    });
-}
+
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+
+        // Compare the password
+        const validPassword = await bcrypt.compare(req.body.password, user.password);
+        if (!validPassword) {
+            return res.status(401).send("Invalid password");
+        }
+
+        // Update the last login date
+        await User.update({ lastlogin: new Date() }, { where: { userid: user.userid } });
+
+        // Fetching User Images
+        const images = await ImageService.getImagesByUserId(user.userid);
+
+        // Removing the password for security reasons
+        const userData = { ...user.dataValues, password: undefined, images };
+
+        // Generate the JWT tokens
+        const tokens = jwtTokens(userData);
+
+        // Send the tokens and the user data
+        res.status(200).send({ tokens: tokens, user: userData });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("An error occurred while processing the login");
+    }
+};
 
 
 /**
@@ -190,7 +175,6 @@ const logout = async (req, res) => {
     console.log(req.body),
     res.send("User has logged out")
 }
-
 
 
 /**
