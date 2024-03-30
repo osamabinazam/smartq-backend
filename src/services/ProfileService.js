@@ -2,7 +2,6 @@ import db from '../models/index.js';
 
 const VendorProfileModel = db.VendorProfileModel;
 const CustomerProfileModel = db.CustomerProfileModel;
-const UserModel = db.UserModel;
 
 
 /*********************************************************************************************
@@ -195,13 +194,34 @@ const getAllCustomerProfiles = async () => {
     }
 }
 
+
+/**
+ * Get Vendor Profile by User ID
+ * @param {number} userId - User ID
+ * @returns {Object} - The Vendor Profile object
+ * @throws {Error} - Throws error if the operation fails
+ */
+const getVendorProfileByUserId = async (userId) => {
+    try {
+        return await VendorProfileModel.findOne({ where: { userid: userId } });
+    } catch (error) {
+        console.error("Error fetching vendor profile:", error);
+        throw new Error("Failed to fetch vendor profile.");
+    }
+}
+
+/********************************************************************************************
+ * ************ Export Profile Services ******************************************************
+ * ******************************************************************************************
+ */
+
 export default { 
     createVendorProfile, 
     getVendorProfileById,
     updateVendorProfile,
     deleteVendorProfile,
     getAllVendorProfiles,
-    
+    getVendorProfileByUserId,
     createCustomerProfile,
     getCustomerProfileById,
     updateCustomerProfile,

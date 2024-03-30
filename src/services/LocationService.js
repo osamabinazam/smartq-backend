@@ -88,3 +88,27 @@ const getAllLocations = async () => {
         throw new Error("Failed to fetch locations.");
     }
 }
+
+/**
+ * Get all Locations by Vendor Profile ID
+ * @param {number} vendorProfileId - Vendor Profile ID
+ * @returns {Array} - Array of Location objects
+ * @throws {Error} - Throws error if the operation fails
+ */
+const getLocationsByVendorProfileId = async (vendorProfileId) => {
+    try {
+        return await LocationModel.findAll({ where: { vendorprofileid: vendorProfileId } });
+    } catch (error) {
+        console.error("Error fetching locations:", error);
+        throw new Error("Failed to fetch locations.");
+    }
+}
+
+
+export default { 
+    createLocation, 
+    getLocationById, 
+    updateLocation, 
+    deleteLocation, 
+    getAllLocations 
+};
