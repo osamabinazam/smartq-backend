@@ -6,8 +6,8 @@ BEGIN;
 CREATE TABLE IF NOT EXISTS public.appointments
 (
     "appointmentID" uuid NOT NULL,
-    "appointmentDateTime" timestamp with time zone NOT NULL,
-    "appointmentStatus" "enum_appointments_appointmentStatus" NOT NULL,
+    "appointmentDateTime" timestamp with time zone NOT NULL,                -- For Both
+    "appointmentStatus" "enum_appointments_appointmentStatus" NOT NULL,   -- For Vendor
     "createdAt" timestamp with time zone NOT NULL,
     "updatedAt" timestamp with time zone NOT NULL,
     customerprofileid uuid,
@@ -67,6 +67,8 @@ CREATE TABLE IF NOT EXISTS public.customer_profiles
     emailaddress character varying(255) COLLATE pg_catalog."default" NOT NULL,
     dateofbirth date,
     preferences jsonb,
+    "profilePhoto" character varying(255) COLLATE pg_catalog."default",
+    "coverPhoto" character varying(255) COLLATE pg_catalog."default",
     "createdAt" timestamp with time zone NOT NULL,
     "updatedAt" timestamp with time zone NOT NULL,
     userid uuid,
@@ -114,6 +116,19 @@ CREATE TABLE IF NOT EXISTS public.educations
     CONSTRAINT educations_pkey PRIMARY KEY (educationid)
 );
 
+CREATE TABLE IF NOT EXISTS public.images
+(
+    id serial NOT NULL,
+    type enum_images_type NOT NULL,
+    path character varying(255) COLLATE pg_catalog."default" NOT NULL,
+    imagealttext character varying(255) COLLATE pg_catalog."default",
+    "createdAt" timestamp with time zone NOT NULL,
+    "updatedAt" timestamp with time zone NOT NULL,
+    customerprofileid uuid,
+    vendorprofileid uuid,
+    CONSTRAINT images_pkey PRIMARY KEY (id)
+);
+
 CREATE TABLE IF NOT EXISTS public.locations
 (
     locationid uuid NOT NULL,
@@ -159,6 +174,7 @@ CREATE TABLE IF NOT EXISTS public.queues
 CREATE TABLE IF NOT EXISTS public.requests
 (
     "requestID" uuid NOT NULL,
+    "requestDateTime" timestamp with time zone NOT NULL,
     "additionalNotes" text COLLATE pg_catalog."default",
     "createdAt" timestamp with time zone NOT NULL,
     "updatedAt" timestamp with time zone NOT NULL,
@@ -312,6 +328,20 @@ ALTER TABLE IF EXISTS public.educations
 
 ALTER TABLE IF EXISTS public.educations
     ADD CONSTRAINT educations_vendorprofileid_fkey FOREIGN KEY (vendorprofileid)
+    REFERENCES public.vendor_profiles (vendorprofileid) MATCH SIMPLE
+    ON UPDATE CASCADE
+    ON DELETE SET NULL;
+
+
+ALTER TABLE IF EXISTS public.images
+    ADD CONSTRAINT images_customerprofileid_fkey FOREIGN KEY (customerprofileid)
+    REFERENCES public.customer_profiles (customerprofileid) MATCH SIMPLE
+    ON UPDATE CASCADE
+    ON DELETE SET NULL;
+
+
+ALTER TABLE IF EXISTS public.images
+    ADD CONSTRAINT images_vendorprofileid_fkey FOREIGN KEY (vendorprofileid)
     REFERENCES public.vendor_profiles (vendorprofileid) MATCH SIMPLE
     ON UPDATE CASCADE
     ON DELETE SET NULL;
