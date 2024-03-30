@@ -7,7 +7,7 @@ const jwtTokens = (user) =>{
     console.log("User is : ", user)
 
     // Access Token
-    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '2h'});
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '3d'});
     // Refresh Token
     const refreshToken = jwt.sign(user, process.env.REFRESH_TOKEN_SECRET, {expiresIn: '7d'});
     return {accessToken, refreshToken};

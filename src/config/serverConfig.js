@@ -7,6 +7,8 @@ import {fileURLToPath} from "url";
 import authRoutes from "../routes/AuthRoutes.js";
 import userRoutes from "../routes/UserRoutes.js";
 import imageUploadsRoutes from "../routes/imageUploadsRoutes.js";
+import profileRoutes from "../routes/profileRoutes.js";
+import LocationRoutes from "../routes/LocationRoutes.js";
 import fs from "fs";
 import path from "path";
 dotenv.config();
@@ -40,6 +42,8 @@ app.use('/',express.static(join(__dirname, "public")));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/images', imageUploadsRoutes);
+app.use('/api/profile', profileRoutes);
+app.use('/api/location', LocationRoutes);
 
 export default app;
 
