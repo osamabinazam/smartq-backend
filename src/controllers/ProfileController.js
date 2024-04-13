@@ -55,7 +55,7 @@ const createVendorProfile = async (req, res) => {
  * @returns 
  */
 const createCustomerProfile = async (req, res) => {
-    console.log(res.body);
+
     if (!req.body) {
         return res.status(400).send({
             message: "Data to update can not be empty!"
@@ -68,7 +68,6 @@ const createCustomerProfile = async (req, res) => {
             lastname: req.body.lastname,
             emailaddress:req.body.emailaddress,
             dateofbirth: req.body.dateofbirth,
-            preferences: req.body.preferences,
             userid: req.user.userid
         }
         try {

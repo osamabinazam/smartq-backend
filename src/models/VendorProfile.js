@@ -22,7 +22,6 @@ const VendorProfileModel = (sequelize) => {
    */
   VendorProfile.init({
     vendorprofileid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-    // userid: { type: DataTypes.UUID, allowNull: false, references: { model: 'user', key: 'userid' } },
     businessname: { type: DataTypes.STRING(255) },
     businesstype: { type: DataTypes.STRING(255) },
     bio: { type: DataTypes.TEXT },

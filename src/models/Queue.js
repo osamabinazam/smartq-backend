@@ -23,7 +23,8 @@ const QueueModel = (sequelize) => {
     currentQueueSize: { type: DataTypes.INTEGER, allowNull: false },
     averageServiceTime: { type: DataTypes.BIGINT },
     queueStartTime: { type: DataTypes.TIME },
-    queueEndTime: { type: DataTypes.TIME }
+    queueEndTime: { type: DataTypes.TIME },
+    queueStatus: { type: DataTypes.ENUM('active', 'inactive', 'completed'), allowNull: false }   // Add Status
   }, {
     sequelize,
     modelName: 'Queue',

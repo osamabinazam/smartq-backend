@@ -65,7 +65,7 @@ sequelize.authenticate()
 /**
  * Synchronize the models with the database
  */
-db.sequelize.sync({force: false, alter:true})
+db.sequelize.sync({force: true, alter:true})
     .then(() => {
         console.log('All models were synchronized successfully.');
     })
@@ -99,7 +99,7 @@ db.QueueModel.belongsTo(db.CustomerProfileModel, { foreignKey: 'customerprofilei
 db.CustomerProfileModel.hasMany(db.AppointmentModel, { foreignKey: 'customerprofileid', as: 'appointments' });
 db.AppointmentModel.belongsTo(db.CustomerProfileModel, { foreignKey: 'customerprofileid', as: 'customer_profile' });
 
-// CustomerProfile and SearchHistory
+// CustomerProfile and SearchHistory (Note Customer can have multiple search history)
 db.CustomerProfileModel.hasMany(db.CustomerSearchHistoryModel, { foreignKey: 'customerprofileid', as: 'search_history' });
 db.CustomerSearchHistoryModel.belongsTo(db.CustomerProfileModel, { foreignKey: 'customerprofileid', as: 'customer_profile' });
 
@@ -111,9 +111,6 @@ db.CustomerSearchPreferencesModel.belongsTo(db.CustomerProfileModel, { foreignKe
 db.CustomerProfileModel.hasMany(db.RequestModel, { foreignKey: 'customerprofileid', as: 'requests' });
 db.RequestModel.belongsTo(db.CustomerProfileModel, { foreignKey: 'customerprofileid', as: 'customer_profile' });
 
-// CustomerProfile and Image (Note Customer can have multiple images)
-// db.CustomerProfileModel.hasMany(db.ImageModel, { foreignKey: 'customerprofileid', as: 'images' });
-// db.ImageModel.belongsTo(db.CustomerProfileModel, { foreignKey: 'customerprofileid', as: 'customer_profile' });
 
 // VendorProfile and Request (Node Vendor can recieve multiple requests)
 db.VendorProfileModel.hasMany(db.RequestModel, { foreignKey: 'vendorprofileid', as: 'requests' });
@@ -151,9 +148,6 @@ db.EducationModel.belongsTo(db.VendorProfileModel, { foreignKey: 'vendorprofilei
 db.VendorProfileModel.hasMany(db.AppointmentModel, { foreignKey: 'vendorprofileid', as: 'appointments' });
 db.AppointmentModel.belongsTo(db.VendorProfileModel, { foreignKey: 'vendorprofileid', as: 'vendor_profile' });
 
-// VendorProfile and Image (Note Vendor can have multiple images)
-// db.VendorProfileModel.hasMany(db.ImageModel, { foreignKey: 'vendorprofileid', as: 'images' });
-// db.ImageModel.belongsTo(db.VendorProfileModel, { foreignKey: 'vendorprofileid', as: 'vendor_profile' });
 
 // // Category Self-Association (for parent/child categories)
 db.CategoryModel.hasMany(db.CategoryModel, { as: 'Subcategories', foreignKey: 'parentcategoryid' });

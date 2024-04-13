@@ -26,7 +26,6 @@ const CustomerProfileModel = (sequelize) => {
     lastname: { type: DataTypes.STRING(255), allowNull: false },
     emailaddress: { type: DataTypes.STRING(255), allowNull: false, unique: true },
     dateofbirth: { type: DataTypes.DATEONLY },
-    preferences: { type: DataTypes.JSONB },
   }, {
     sequelize,
     modelName: 'CustomerProfile',

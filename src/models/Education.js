@@ -25,7 +25,7 @@ const EducationModel = (sequelize) => {
     school: { type: DataTypes.STRING(255), allowNull: false },
     startat: { type: DataTypes.DATEONLY },
     endat: { type: DataTypes.DATEONLY },
-    degree: { type: DataTypes.STRING(255) },
+    degree: { type: DataTypes.INTEGER },
     description: { type: DataTypes.TEXT },
   }, {
     sequelize,

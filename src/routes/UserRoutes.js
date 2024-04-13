@@ -15,7 +15,10 @@ router.put('/:id', authenticateToken, UserControllers.update);
 router.delete('/:id', authenticateToken, UserControllers.deleteUser);
 
 // delete all users
-// router.delete('/', authenticateToken, authorizeRoles('admin'), UserControllers.deleteUser);
+router.delete('/', authenticateToken, authorizeRoles('admin'), UserControllers.deleteUser);
+
+// get user based on usertype
+// router.get('/usertype/:usertype', authenticateToken, authorizeRoles('admin', 'vendor', 'customer'), UserControllers.getByUserType);
 
 
 export default router;

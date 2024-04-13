@@ -23,10 +23,9 @@ const ContactModel = (sequelize) => {
   Contact.init({
     contactid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
     phone: { type: DataTypes.STRING(20) },
-    contactaddress: { type: DataTypes.TEXT },
+    address: { type: DataTypes.TEXT },
     city: { type: DataTypes.STRING(255) },
     state: { type: DataTypes.STRING(255) },
-    postalcode: { type: DataTypes.STRING(20) },
     country: { type: DataTypes.STRING(255) }
   }, {
     sequelize,
