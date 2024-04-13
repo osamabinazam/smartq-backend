@@ -2,6 +2,7 @@ import db from "../models/index.js";
 import bcrypt from 'bcrypt';
 import jwtTokens from '../utils/jwt-helper.js';
 import ImageService from "../services/ImageService.js";
+import ProfileService from "../services/ProfileService.js";
 
 
 /**
@@ -83,8 +84,6 @@ const register = async (req, res) => {
         password: hashPassword,
         gender: req.body.gender,
         usertype: req.body.usertype,
-        isactive: true,
-        lastlogin: currentDate
 
     }
 
@@ -101,10 +100,30 @@ const register = async (req, res) => {
         // generate the jwt tokens
         const tokens = jwtTokens(user.dataValues);
 
+        if (user.dataValues.usertype === 'vendor'){
+            const vendorProfile = {
+                businessname: null,
+                businesstype: null,
+                bio: null,
+                dob: null,
+                userid: user.userid
+            }
+
+            var vp = null;
+            // create the vendor profile
+            ProfileService.createVendorProfile(vendorProfile).then((vendorProfile) => {
+                if (!vendorProfile){
+                   vp = vendorProfile;
+                }
+            }).catch((err) => {
+                throw new Error("Failed to create vendor profile.");
+            });
+        }
+
         // send the tokens and the user data
         res.status(201).send({tokens:tokens, user: user.dataValues, message: "User registered successfully"})
     }).catch((err) => {
-        res.status(500).send("Error while registering the user")
+        res.status(500).send(err)
     });
 }
 

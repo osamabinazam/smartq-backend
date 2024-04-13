@@ -1,5 +1,6 @@
 // Assuming this is in src/controllers/ImageController.js
 import db  from '../models/index.js'; // Adjust the import path according to your project structure
+import claudniaryUploads from '../utils/claudniaryUploads.js';
 
 
 const Image = db.ImageModel;
@@ -39,9 +40,12 @@ const uploadImage = async (req, res) => {
     // Process and save profile photo if it exists
     if (req.files.profilePhoto && req.files.profilePhoto.length) {
       const profilePhoto = req.files.profilePhoto[0];
+      const newImage = await claudniaryUploads.uploadSingleFile(profilePhoto);
+      console.log(newImage)
+
       const savedProfilePhoto = await Image.create({
         type: 'profile',
-        path: profilePhoto.path,
+        path: newImage.imageUrl,
         imagealttext: 'Profile Photo',
         userid: user.userid,
 
@@ -52,9 +56,10 @@ const uploadImage = async (req, res) => {
     // Process and save cover photo if it exists
     if (req.files.coverPhoto && req.files.coverPhoto.length) {
       const coverPhoto = req.files.coverPhoto[0];
+      const newImage = await claudniaryUploads.uploadSingleFile(coverPhoto);
       const savedCoverPhoto = await Image.create({
         type: 'cover',
-        path: coverPhoto.path,
+        path: newImage.imageUrl,
         imagealttext: 'Cover Photo', // Or derive from file data if applicable
         userid: user.userid,
       });
