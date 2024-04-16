@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
 /**
  * Middleware to authorize users based on roles.
@@ -31,4 +31,4 @@ const authorizeRoles = (...allowedRoles) => {
   };
 };
 
-export default authorizeRoles;
+module.exports = authorizeRoles;

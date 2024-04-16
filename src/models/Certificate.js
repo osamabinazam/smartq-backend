@@ -1,9 +1,9 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+const { Model, DataTypes, Sequelize } = require('sequelize');
 
 /**
- *  Certificate model function  - Represents the certificate of a user in the system.
- * @param {Sequelize} sequelize  - The Sequelize instance for connecting to the database.
- * @returns  {Model} Certificate model definition.
+ *  Certificate model function - Represents the certificate of a user in the system.
+ * @param {Sequelize} sequelize - The Sequelize instance for connecting to the database.
+ * @returns {Model} Certificate model definition.
  */
 const CertificateModel = (sequelize) => {
 
@@ -39,11 +39,7 @@ const CertificateModel = (sequelize) => {
   return Certificate;
 };
 
-
 /**
  * Exports the Certificate model function.
- * @export CertificateModel
  */
-export default CertificateModel;
-
-
+module.exports = CertificateModel;

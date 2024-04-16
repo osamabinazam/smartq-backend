@@ -1,4 +1,4 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+const { Model, DataTypes } = require('sequelize');
 
 /**
  * Represents a category in the system.
@@ -46,6 +46,5 @@ const CategoryModel = (sequelize) => {
 
 /**
  * Exports the Category model function.
- * @export CategoryModel
  */
-export default CategoryModel;
+module.exports = CategoryModel;

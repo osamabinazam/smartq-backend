@@ -1,9 +1,7 @@
-
-import db from '../models/index.js';
+const db = require('../models/index.js');
 
 const LocationModel = db.LocationModel;
 const VendorProfileModel = db.VendorProfileModel;
-
 
 /**
  * Create a new Location
@@ -42,7 +40,6 @@ const getLocationById = async (locationId) => {
  * @returns {Object} - The updated Location object
  * @throws {Error} - Throws error if the operation fails
  */
-
 const updateLocation = async (locationId, locationDetails) => {
     try {
         const [updatedRows] = await LocationModel.update(locationDetails, { where: { locationid: locationId } });
@@ -73,7 +70,7 @@ const deleteLocation = async (locationId) => {
         console.error("Error deleting location:", error);
         throw error; // Re-throw the error for the caller to handle
     }
-}   
+}
 
 /**
  * Get all Locations
@@ -104,11 +101,11 @@ const getLocationsByVendorProfileId = async (vendorProfileId) => {
     }
 }
 
-
-export default { 
+module.exports = { 
     createLocation, 
     getLocationById, 
     updateLocation, 
     deleteLocation, 
-    getAllLocations 
+    getAllLocations, 
+    getLocationsByVendorProfileId
 };

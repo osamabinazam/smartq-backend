@@ -1,7 +1,6 @@
-import db from '../models/index.js';
+const db = require('../models/index.js');
 
 const CategoryModel = db.CategoryModel;
-
 
 /**
  * Create a new Category
@@ -138,7 +137,7 @@ const getSubcategoryById = async (subcategoryId) => {
 /**
  * Export the CategoryService module
  */
-export default {
+module.exports = {
     createCategory,
     getCategoryById,
     updateCategory,
@@ -147,5 +146,4 @@ export default {
     getSubcategoriesByCategoryId,
     getAllCategoriesWithSubcategories,
     getSubcategoryById
-
 };

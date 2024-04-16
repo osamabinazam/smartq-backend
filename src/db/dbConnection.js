@@ -1,6 +1,5 @@
-import { Sequelize } from "sequelize";
-import dbConfig from "../config/dbConfig.js";
-
+const { Sequelize } = require("sequelize");
+const dbConfig = require("../config/dbConfig.js");
 
 /**
  * Database connection configuration - Represents the connection to the postgres database.
@@ -16,7 +15,6 @@ const db = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
         min: dbConfig.pool.min || 1,
         acquire: dbConfig.pool.acquire || 30000,
         idle: dbConfig.pool.idle || 10000
-    
     }
 });
 
@@ -25,4 +23,4 @@ const db = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
  * @type {Sequelize}
  * @export db
  */
-export default db;
+module.exports = db;

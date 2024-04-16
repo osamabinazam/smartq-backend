@@ -1,22 +1,24 @@
-import { Model, DataTypes } from 'sequelize';
+const { Model, DataTypes } = require('sequelize');
 
 /**
- *  Location model function  - Represents the location of a vendor in the system.
- * @param {*} sequelize  - The Sequelize instance for connecting to the database.
- * @returns  {Model} Location model definition.
+ * Location model function - Represents the location of a vendor in the system.
+ * @param {*} sequelize - The Sequelize instance for connecting to the database.
+ * @returns {Model} Location model definition.
  */
 const LocationModel = (sequelize) => {
 
   /**
    * Represents the location of a vendor in the system.
+   * @class Location
+   * @extends Model
    */
   class Location extends Model {}
 
   /**
    * Initializes the Location model with predefined fields and options.
    * @returns {Model} Location model definition.
-   * @param {Object} fields - The fields to define the Location model.
    * @constructor Location
+   * @param {Object} fields - The fields to define the Location model.
    */
   Location.init({
     locationid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
@@ -38,6 +40,5 @@ const LocationModel = (sequelize) => {
 
 /**
  * Exports the Location model function.
- * @export LocationModel
  */
-export default LocationModel;
+module.exports = LocationModel;

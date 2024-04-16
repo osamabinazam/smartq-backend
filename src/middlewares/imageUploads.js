@@ -1,9 +1,8 @@
-
-import multer from "multer";
-import sharp from "sharp";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+const multer = require("multer");
+const sharp = require("sharp");
+const fs = require("fs");
+const path = require("path");
+const { fileURLToPath } = require("url");
 
 // Use memory storage to temporarily hold files for processing
 const storage = multer.memoryStorage();
@@ -15,8 +14,7 @@ const upload = multer({ storage: storage }).fields([
 
 // Function to save processed image to disk
 const saveImageToFile = (buffer, filename) => {
-
-    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const __dirname = path.dirname(__filename); // Use __filename instead of import.meta.url
     const filePath = path.join(__dirname, '../../public/images', filename);
     fs.writeFileSync(filePath, buffer);
     return filePath;
@@ -28,7 +26,6 @@ const imageProcessingMiddleware = async (req, res, next) => {
          if (!req.files || Object.keys(req.files).length === 0) {
             return res.status(400).send({ message: 'No files were uploaded.' });
         }
-
 
         const files = req.files;
         console.log("Files : ", files)
@@ -62,8 +59,8 @@ const imageProcessingMiddleware = async (req, res, next) => {
         res.status(500).send({ message: 'Error processing images', error: error.toString() });
     }
 };
-export 
-    {
-        upload,
-        imageProcessingMiddleware
-    };
+
+module.exports = {
+    upload,
+    imageProcessingMiddleware
+};

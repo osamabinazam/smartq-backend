@@ -1,43 +1,25 @@
-// Assuming this is in src/controllers/ImageController.js
-import db  from '../models/index.js'; // Adjust the import path according to your project structure
-import claudniaryUploads from '../utils/claudniaryUploads.js';
-
+// Convert ES6 imports to CommonJS require statements
+const db = require('../models/index.js');
+const claudniaryUploads = require('../utils/claudniaryUploads.js');
 
 const Image = db.ImageModel;
 const Customer = db.CustomerProfileModel;
 const Vendor = db.VendorProfileModel;
 
-
-
-
-/**
- * Controller to handle the logic after images are uploaded and processed.
- * Saves image data in the database and responds to the client.
- * 
- * @param {Object} req - The request object from Express, containing uploaded files.
- * @param {Object} res - The response object from Express.
- */
+// Function to handle image uploading
 const uploadImage = async (req, res) => {
   try {
-    // Check if there are files processed and available in the request
     if (!req.files || (!req.files.profilePhoto && !req.files.coverPhoto)) {
       return res.status(400).send({ message: 'No processed files found in the request.' });
     }
 
-
-    // Check if the user is authenticated
-    if (!req.user){
-        return res.status(401).send({ message: 'Unauthorized. Please log in to upload images.' });
+    if (!req.user) {
+      return res.status(401).send({ message: 'Unauthorized. Please log in to upload images.' });
     }
 
-    // Get User's Profile
     const user = req.user;
-    // const profile = user.role === 'customer' ? await Customer.findOne({ where: { userid: user.userid } }) : await Vendor.findOne({ where: { userid: user.userid } });
-    
+    const savedImages = [];
 
-    const savedImages = []; // To store the results of saved images
-
-    // Process and save profile photo if it exists
     if (req.files.profilePhoto && req.files.profilePhoto.length) {
       const profilePhoto = req.files.profilePhoto[0];
       const newImage = await claudniaryUploads.uploadSingleFile(profilePhoto);
@@ -48,25 +30,22 @@ const uploadImage = async (req, res) => {
         path: newImage.imageUrl,
         imagealttext: 'Profile Photo',
         userid: user.userid,
-
       });
       savedImages.push(savedProfilePhoto);
     }
 
-    // Process and save cover photo if it exists
     if (req.files.coverPhoto && req.files.coverPhoto.length) {
       const coverPhoto = req.files.coverPhoto[0];
       const newImage = await claudniaryUploads.uploadSingleFile(coverPhoto);
       const savedCoverPhoto = await Image.create({
         type: 'cover',
         path: newImage.imageUrl,
-        imagealttext: 'Cover Photo', // Or derive from file data if applicable
+        imagealttext: 'Cover Photo',
         userid: user.userid,
       });
       savedImages.push(savedCoverPhoto);
     }
 
-    // Respond to the client with saved image details
     res.status(201).json({
       message: "Images uploaded and saved successfully.",
       data: savedImages,
@@ -80,32 +59,20 @@ const uploadImage = async (req, res) => {
   }
 };
 
-/**
- * Controller to handle the logic when an upadated image is uploaded and processed.
- *  Updates image data in the database and responds to the client.
- */
-
+// Function to handle image updating
 const updateImage = async (req, res) => {
     try {
-      // Check if there are files processed and available in the request
       if (!req.files || (!req.files.profilePhoto && !req.files.coverPhoto)) {
         return res.status(400).send({ message: 'No processed files found in the request.' });
       }
-  
-  
-      // Check if the user is authenticated
+
       if (!req.user){
           return res.status(401).send({ message: 'Unauthorized. Please log in to upload images.' });
       }
-  
-      // Get User's Profile
+
       const user = req.user;
-      // const profile = user.role === 'customer' ? await Customer.findOne({ where: { userid: user.userid } }) : await Vendor.findOne({ where: { userid: user.userid } });
-      
-  
-      const savedImages = []; // To store the results of saved images
-  
-      // Process and save profile photo if it exists
+      const savedImages = [];
+
       if (req.files.profilePhoto && req.files.profilePhoto.length) {
         const profilePhoto = req.files.profilePhoto[0];
         const savedProfilePhoto = await Image.update({
@@ -113,24 +80,21 @@ const updateImage = async (req, res) => {
           path: profilePhoto.path,
           imagealttext: 'Profile Photo',
           userid: user.userid,
-  
         }, { where: { userid: user.userid } });
         savedImages.push(savedProfilePhoto);
       }
-  
-      // Process and save cover photo if it exists
+
       if (req.files.coverPhoto && req.files.coverPhoto.length) {
         const coverPhoto = req.files.coverPhoto[0];
         const savedCoverPhoto = await Image.update({
           type: 'cover',
           path: coverPhoto.path,
-          imagealttext: 'Cover Photo', // Or derive from file data if applicable
+          imagealttext: 'Cover Photo',
           userid: user.userid,
         }, { where: { userid: user.userid } });
         savedImages.push(savedCoverPhoto);
       }
-  
-      // Respond to the client with saved image details
+
       res.status(201).json({
         message: "Images uploaded and saved successfully.",
         data: savedImages,
@@ -142,15 +106,9 @@ const updateImage = async (req, res) => {
         error: error.message,
       });
     }
-  }
+}
 
-
-/**
- * Remove the image from the database and the file system
- * @param {Object} req - Request object
- * @param {Object} res - Response object
- * 
- */
+// Function to delete an image
 const deleteImage = async (req, res) => {
     const id = req.params.id;
 
@@ -175,10 +133,9 @@ const deleteImage = async (req, res) => {
         });
 }
 
-
-
-/**
- * Export the controller function for use in the routes.
- * This can be imported and used in the routes file.
- */
-export default uploadImage;
+// Export the functions using module.exports
+module.exports = {
+    uploadImage,
+    updateImage,
+    deleteImage
+};

@@ -1,6 +1,5 @@
-// Import necessary modules and dependencies
-import { Sequelize } from 'sequelize';
-import UserModel from './UserModel';
+const { Sequelize } = require('sequelize');
+const UserModel = require('./UserModel');
 
 // Initialize a Sequelize instance for testing
 const sequelize = new Sequelize('sqlite::memory:');

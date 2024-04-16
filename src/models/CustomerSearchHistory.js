@@ -1,9 +1,9 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+const { Model, DataTypes, Sequelize } = require('sequelize');
 
 /**
- *  CustomerSearchHistory model function  - Represents the search history of a customer in the system.
- * @param {Sequelize} sequelize  - The Sequelize instance for connecting to the database.
- * @returns  {Model} CustomerSearchHistory model definition.
+ * CustomerSearchHistory model function - Represents the search history of a customer in the system.
+ * @param {Sequelize} sequelize - The Sequelize instance for connecting to the database.
+ * @returns {Model} CustomerSearchHistory model definition.
  */
 const CustomerSearchHistoryModel = (sequelize) => {
 
@@ -12,8 +12,7 @@ const CustomerSearchHistoryModel = (sequelize) => {
    * @class CustomerSearchHistory
    * @extends Model
    */
-  class CustomerSearchHistory extends Model { }
-
+  class CustomerSearchHistory extends Model {}
 
   /**
    * Initializes the CustomerSearchHistory model with predefined fields and options.
@@ -35,10 +34,7 @@ const CustomerSearchHistoryModel = (sequelize) => {
   return CustomerSearchHistory;
 };
 
-
-
 /**
  * Exports the CustomerSearchHistory model function.
- * @export CustomerSearchHistoryModel
  */
-export default CustomerSearchHistoryModel;
+module.exports = CustomerSearchHistoryModel;

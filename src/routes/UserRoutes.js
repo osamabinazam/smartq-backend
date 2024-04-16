@@ -1,12 +1,12 @@
-import UserControllers from '../controllers/UserController.js';
-import authenticateToken from '../middlewares/authorization.js';
-import authorizeRoles from '../middlewares/authorizeRoles.js';
-import express from 'express';
+const UserControllers = require('../controllers/UserController.js');
+const authenticateToken = require('../middlewares/authorization.js');
+const authorizeRoles = require('../middlewares/authorizeRoles.js');
+const express = require('express');
 const router = express.Router();
 
 router.get('/', authenticateToken, authorizeRoles('admin', 'customer', 'vendor'), UserControllers.getAll);
-router.get('/:id', authenticateToken, authorizeRoles('customer', 'vendor', 'admin') ,UserControllers.getById);
-router.get('/username/:username', authenticateToken,authorizeRoles('customer', 'vendor', 'admin'), UserControllers.getByUsername);
+router.get('/:id', authenticateToken, authorizeRoles('customer', 'vendor', 'admin'), UserControllers.getById);
+router.get('/username/:username', authenticateToken, authorizeRoles('customer', 'vendor', 'admin'), UserControllers.getByUsername);
 
 // update the user
 router.put('/:id', authenticateToken, UserControllers.update);
@@ -17,8 +17,4 @@ router.delete('/:id', authenticateToken, UserControllers.deleteUser);
 // delete all users
 router.delete('/', authenticateToken, authorizeRoles('admin'), UserControllers.deleteUser);
 
-// get user based on usertype
-// router.get('/usertype/:usertype', authenticateToken, authorizeRoles('admin', 'vendor', 'customer'), UserControllers.getByUserType);
-
-
-export default router;
+module.exports = router;

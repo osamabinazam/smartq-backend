@@ -1,4 +1,4 @@
-import db from '../models/index.js';
+const db = require('../models/index.js');
 
 const Image = db.ImageModel;
 
@@ -55,4 +55,4 @@ const getImagesByUserId = async (userId) => {
     }
 };
 
-export default { createImage, updateImage, deleteImage, getImagesByUserId };
+module.exports = { createImage, updateImage, deleteImage, getImagesByUserId };

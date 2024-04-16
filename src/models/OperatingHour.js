@@ -1,16 +1,16 @@
-import { Model, DataTypes } from 'sequelize';
+const { Model, DataTypes } = require('sequelize');
 
 /**
  *  OperatingHours model function  - Represents the operating hours of a vendor in the system.
  * @param {*} sequelize  - The Sequelize instance for connecting to the database.
  * @returns  {Model} OperatingHours model definition.
  */
-const OperatingHoursModel = (sequelize) => {
+const OperatingHourModel = (sequelize) => {
 
   /**
    * Represents the operating hours of a vendor in the system.
    */
-  class OpeningHours extends Model {}
+  class OperatingHour extends Model {}
 
   /**
    * Initializes the OperatingHours model with predefined fields and options.
@@ -18,7 +18,7 @@ const OperatingHoursModel = (sequelize) => {
    * @param {Object} fields - The fields to define the OperatingHours model.
    * @constructor OperatingHours
    */
-  OpeningHours.init({
+  OperatingHour.init({
     openinghoursid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
     weekday: { type: DataTypes.STRING(10) },
     opentime: { type: DataTypes.TIME },
@@ -26,17 +26,16 @@ const OperatingHoursModel = (sequelize) => {
     isclosed: { type: DataTypes.BOOLEAN }
   }, {
     sequelize,
-    modelName: 'OpeningHours',
+    modelName: 'OperatingHour',
     tableName: 'opening_hours',
     timestamps: true
   });
 
-  return OpeningHours;
+  return OperatingHour;
 };
 
 
 /**
  * Exports the OperatingHours model function.
- * @export OperatingHoursModel
  */
-export default OperatingHoursModel;
+module.exports = OperatingHourModel;

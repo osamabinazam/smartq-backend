@@ -1,4 +1,4 @@
-import db from '../models/index.js';
+const db = require('../models/index.js');
 
 const QueueModel = db.QueueModel;
 
@@ -68,7 +68,7 @@ const deleteQueue = async (queueId) => {
 }
 
 /**
- * Get Queue By Vendor ID and also include the appointements and services
+ * Get Queue By Vendor ID and also include the appointments and services
  * @param {number} vendorId - Vendor ID
  * @returns {Object} - The Queue object
  * @throws {Error} - Throws error if the operation fails
@@ -90,15 +90,14 @@ const getQueueByVendorId = async (vendorId) => {
 }
 
 /**
- * Get Queue By Customer ID and also include the appointements and services
+ * Get Queue By Customer ID and also include the appointments and services
  * @param {number} customerId - Customer ID
  * @returns {Object} - The Queue object
  * @throws {Error} - Throws error if the operation fails
  */
 const getQueueByCustomerId = async (customerId) => {
     try {
-        return
-        await QueueModel.findOne({
+        return await QueueModel.findOne({
             where: { customerid: customerId },
             order: [['createdAt', 'DESC']],
             include: [
@@ -128,12 +127,12 @@ const getQueuesByQueueStatus = async (queueStatus) => {
     }
 }
 
-
-
-
-export {
+module.exports = {
     createQueue,
     getQueueById,
     updateQueue,
-    deleteQueue
+    deleteQueue,
+    getQueueByVendorId,
+    getQueueByCustomerId,
+    getQueuesByQueueStatus
 };

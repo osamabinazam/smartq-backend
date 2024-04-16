@@ -1,4 +1,4 @@
-import db from "../models/index.js";
+const db = require("../models/index.js");
 
 const OperatingHoursModel = db.OperatingHoursModel;
 
@@ -67,4 +67,4 @@ const deleteOperatingHours = async (operatingHoursId) => {
     }
 }
 
-export { createOperatingHours, getOperatingHoursById, updateOperatingHours, deleteOperatingHours };
+module.exports = { createOperatingHours, getOperatingHoursById, updateOperatingHours, deleteOperatingHours };

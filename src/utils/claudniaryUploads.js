@@ -1,24 +1,18 @@
-// File: fileUploadUtils.js
+const multer = require("multer");
+const axios = require("axios");
 
-import multer from "multer";
-import axios from "axios";
-
-import cl from 'cloudinary';
-const cloudinary = cl.v2;
-import streamifier from 'streamifier';
-
+const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
 
 cloudinary.config({
   cloud_name: "dbxudp6uh",
-  api_key:"595284681912747",
+  api_key: "595284681912747",
   api_secret: "2iY0eowdVdmpP7kHnpe2w3qtW9A",
 });
 
-// Set up Multer for handling file uploads
-const storage = multer.memoryStorage(); // Store files in memory as buffers
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Function to upload a single file to Cloudinary
 const uploadSingleFile = async (file) => {
   try {
     const result = await new Promise((resolve, reject) => {
@@ -89,10 +83,10 @@ const uploadMultipleFiles = async (files) => {
   }
 };
 
-const uploadSingleMiddleware = upload.single("image"); // Middleware for single file upload
-const uploadMultipleMiddleware = upload.array("images"); // Middleware for multiple file upload
+const uploadSingleMiddleware = upload.single("image");
+const uploadMultipleMiddleware = upload.array("images");
 
-export default  {
+module.exports = {
   uploadSingleFile,
   uploadMultipleFiles,
   uploadSingleMiddleware,

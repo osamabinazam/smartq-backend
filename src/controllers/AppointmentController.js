@@ -1,4 +1,4 @@
-import AppointmentService from '../services/AppointmentService';
+const AppointmentService = require('../services/AppointmentService');
 
 /**
  * Create Vendor's Appointment
@@ -7,6 +7,12 @@ import AppointmentService from '../services/AppointmentService';
  * @returns {object} appointment object
  */
 const createAppointment = async (req, res) => {
+
+    if (!req.body) {
+        return res.status(400).json({
+            message: 'No appointment data found in the request.',
+        });
+    }
 
     if (!req.body.vendorid || !req.body.customerid || !req.body.serviceid || !req.body.queueid || !req.body.date || !req.body.time) {
         return res.status(400).json({
@@ -17,12 +23,6 @@ const createAppointment = async (req, res) => {
     if (!req.user) {
         return res.status(401).json({
             message: 'Unauthorized. Please log in to create an appointment.',
-        });
-    }
-
-    if (!req.body){
-        return res.status(400).json({
-            message: 'No appointment data found in the request.',
         });
     }
 
@@ -46,3 +46,5 @@ const createAppointment = async (req, res) => {
         });
     }
 }
+
+module.exports = createAppointment;

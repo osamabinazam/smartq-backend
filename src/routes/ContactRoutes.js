@@ -1,8 +1,8 @@
-import ProfileController from '../controllers/ProfileController.js';
-import authenticateToken from '../middlewares/authorization.js';
-import authorizeRoles from '../middlewares/authorizeRoles.js';
-import ContactController from '../controllers/ContactController.js';
-import express from 'express';
+const ProfileController = require('../controllers/ProfileController.js');
+const authenticateToken = require('../middlewares/authorization.js');
+const authorizeRoles = require('../middlewares/authorizeRoles.js');
+const ContactController = require('../controllers/ContactController.js');
+const express = require('express');
 const router = express.Router();
 
 router.post('/contact', authenticateToken, authorizeRoles('customer', 'vendor', 'admin'), ContactController.createContact);
@@ -10,4 +10,4 @@ router.get('/contact/:id', authenticateToken, authorizeRoles('customer', 'vendor
 router.put('/contact/:id', authenticateToken, authorizeRoles('customer', 'vendor', 'admin'), ContactController.updateContact);
 router.delete('/contact/:id', authenticateToken, authorizeRoles('customer', 'vendor', 'admin'), ContactController.deleteContact);
 
-export default router;
+module.exports = router;

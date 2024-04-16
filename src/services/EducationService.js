@@ -1,4 +1,4 @@
-import db from '../models/index.js';
+const db = require('../models/index.js');
 
 const EducationModel = db.EducationModel;
 
@@ -39,17 +39,14 @@ const getEducationById = async (educationId) => {
  * @returns {Object} - The updated Education object
  * @throws {Error} - Throws error if the operation fails
  */
-
 const updateEducation = async (educationId, educationDetails) => {
     try {
-        const [updatedRows] = await EducationModel
-            .update(educationDetails, { where: { educationid: educationId } });
+        const [updatedRows] = await EducationModel.update(educationDetails, { where: { educationid: educationId } });
         if (updatedRows === 0) {
             throw new Error("Education not found or nothing to update.");
         }
         return updatedRows;
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error updating education:", error);
         throw error; // Re-throw the error for the caller to handle
     }
@@ -70,9 +67,9 @@ const deleteEducation = async (educationId) => {
     }
 }
 
-export {
+module.exports = {
     createEducation,
     getEducationById,
     updateEducation,
     deleteEducation
-}
+};

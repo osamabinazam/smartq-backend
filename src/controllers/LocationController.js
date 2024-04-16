@@ -1,5 +1,5 @@
-import LocationService from '../services/LocationService.js';
-import ProfileService from '../services/ProfileService.js';
+const LocationService = require('../services/LocationService.js');
+const ProfileService = require('../services/ProfileService.js');
 
 /**
  * Create Vendor's Location
@@ -237,7 +237,7 @@ const deleteLocation = async (req, res) => {
  * Export controller functions
  */
 
-export default {
+module.exports = {
     createLocation,
     getAllLocations,
     getLocationById,

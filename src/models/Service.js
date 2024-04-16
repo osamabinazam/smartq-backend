@@ -1,9 +1,9 @@
-import { Model, DataTypes } from 'sequelize';
+const { Model, DataTypes } = require('sequelize');
 
 /**
- *  Service model function  - Represents a service in the system. 
- * @param {*} sequelize  - The Sequelize instance for connecting to the database.
- * @returns  {Model} Service model definition.
+ * Service model function - Represents a service in the system.
+ * @param {*} sequelize - The Sequelize instance for connecting to the database.
+ * @returns {Model} Service model definition.
  */
 const ServiceModel = (sequelize) => {
 
@@ -33,9 +33,7 @@ const ServiceModel = (sequelize) => {
   return Service;
 };
 
-
 /**
  * Exports the Service model function.
- * @export ServiceModel
  */
-export default ServiceModel;
+module.exports = ServiceModel;

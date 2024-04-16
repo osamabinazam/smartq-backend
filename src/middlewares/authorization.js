@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
 /**
  * Middleware to authenticate the token.
@@ -21,16 +21,7 @@ const authenticateToken = (req, res, next) => {
     // If the token is null, return an error response.
     if (!token) return res.status(401).json({ error: "Unauthorized" });
 
-    // Get the refresh token from the cookies.
-    const refreshToken = req.cookies['refresh_token'];
-
-    /**
-     * Verifies the token and calls the next middleware.
-     * @param {String} token - The token to verify.
-     * @param {String} process.env.ACCESS_TOKEN_SECRET - The secret key to verify the token.
-     * @param {Function} (error, user) - The callback function to handle the verification.
-     * @returns {Object} res - The response object.
-     */
+    // Verify the token using jwt.verify
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (error, user) => {
         if (error) return res.status(403).json({ error: "Forbidden" });
         req.user = user;
@@ -38,4 +29,4 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
-export default authenticateToken; // This middleware will be used in the routes that require authentication.
+module.exports = authenticateToken; // Exporting the authenticateToken middleware

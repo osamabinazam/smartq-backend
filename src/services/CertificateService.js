@@ -1,4 +1,4 @@
-import db from "../models/index.js";
+const db = require("../models/index.js");
 
 const CertificateModel = db.CertificateModel;
 
@@ -23,7 +23,6 @@ const createCertificate = async (certificate) => {
  * @returns {Object} - The Certificate object
  * @throws {Error} - Throws error if the operation fails
  */
-
 const getCertificateById = async (certificateId) => {
     try {
         return await CertificateModel.findByPk(certificateId);
@@ -32,7 +31,6 @@ const getCertificateById = async (certificateId) => {
         throw new Error("Failed to fetch certificate.");
     }
 }
-
 
 /**
  * Update Certificate by ID
@@ -69,10 +67,9 @@ const deleteCertificate = async (certificateId) => {
     }
 }
 
-export {
+module.exports = {
     createCertificate,
     getCertificateById,
     updateCertificate,
     deleteCertificate
 };
-

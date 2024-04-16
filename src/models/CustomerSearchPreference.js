@@ -1,12 +1,11 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+const { Model, DataTypes, Sequelize } = require('sequelize');
 
 /**
- *  CustomerSearchPreferences model function  - Represents the search preferences of a customer in the system.
- * @param {Sequelize} sequelize  - The Sequelize instance for connecting to the database.
- * @returns  {Model} CustomerSearchPreferences model definition.
+ * CustomerSearchPreferences model function - Represents the search preferences of a customer in the system.
+ * @param {Sequelize} sequelize - The Sequelize instance for connecting to the database.
+ * @returns {Model} CustomerSearchPreferences model definition.
  */
-const CustomerSearchPreferencesModel  = (sequelize) => {
-
+const CustomerSearchPreferencesModel = (sequelize) => {
 
   /**
    * Represents the search preferences of a customer in the system.
@@ -40,6 +39,5 @@ const CustomerSearchPreferencesModel  = (sequelize) => {
 
 /**
  * Exports the CustomerSearchPreferences model function.
- * @export CustomerSearchPreferencesModel
  */
-export default CustomerSearchPreferencesModel;
+module.exports = CustomerSearchPreferencesModel;

@@ -1,7 +1,7 @@
-import LocationController from "../controllers/LocationController.js";
-import authenticateToken from "../middlewares/authorization.js";
-import authorizeRoles from "../middlewares/authorizeRoles.js";
-import express from "express";
+const LocationController = require("../controllers/LocationController.js");
+const authenticateToken = require("../middlewares/authorization.js");
+const authorizeRoles = require("../middlewares/authorizeRoles.js");
+const express = require("express");
 const router = express.Router();
 
 // Location Routes
@@ -12,6 +12,4 @@ router.put("/location/:id", authenticateToken, authorizeRoles("vendor"), Locatio
 router.delete("/location/:id", authenticateToken, authorizeRoles("vendor"), LocationController.deleteLocation);
 router.get("/location/vendor/:id", authenticateToken, authorizeRoles("vendor"), LocationController.getLocationsByVendorProfileId);
 
-
-
-export default router;
+module.exports = router;

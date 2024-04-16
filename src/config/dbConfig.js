@@ -1,5 +1,3 @@
-
-
 /**
  * Database configuration object
  * @type {Object}
@@ -13,8 +11,7 @@
  * @property {Number} pool.min - The minimum number of connection in the pool.
  * @property {Number} pool.acquire - The maximum time, in milliseconds, that pool will try to get connection before throwing error.
  * @property {Number} pool.idle - The maximum time, in milliseconds, that a connection can be idle before being released.
- * @export dbConfig
-
+ * @exports dbConfig
  */
 const dbConfig = {
     host: process.env.DB_HOST || 'localhost',
@@ -30,10 +27,9 @@ const dbConfig = {
     }
 };
 
-
 /**
  * Exporting the database configuration object
  * @type {dbConfig}
- * @export dbConfig
+ * @exports dbConfig
  */
-export default dbConfig;
+module.exports = dbConfig;

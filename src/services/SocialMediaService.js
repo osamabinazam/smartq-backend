@@ -1,4 +1,4 @@
-import db from "../models/index.js";
+const db = require("../models/index.js");
 
 const SocialMediaModel = db.SocialMediaModel;
 
@@ -67,7 +67,7 @@ const deleteSocialMedia = async (socialMediaId) => {
     }
 }
 
-export {
+module.exports = {
     createSocialMedia,
     getSocialMediaById,
     updateSocialMedia,

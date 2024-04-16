@@ -1,10 +1,9 @@
-import { Model, DataTypes } from 'sequelize';
-
+const { Model, DataTypes } = require('sequelize');
 
 /**
- *  Request model function  - Represents a request in the system.
- * @param {*} sequelize  - The Sequelize instance for connecting to the database.
- * @returns  {Model} Request model definition.
+ * Request model function - Represents a request in the system.
+ * @param {*} sequelize - The Sequelize instance for connecting to the database.
+ * @returns {Model} Request model definition.
  */ 
 const RequestModel = (sequelize) => {
 
@@ -35,6 +34,5 @@ const RequestModel = (sequelize) => {
 
 /**
  * Exports the Request model function.
- * @export RequestModel
  */
-export default RequestModel;
+module.exports = RequestModel;

@@ -1,9 +1,9 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+const { Model, DataTypes, Sequelize } = require('sequelize');
 
 /**
- *  Contact model function  - Represents the contact information of a user in the system.
- * @param {Sequelize} sequelize  - The Sequelize instance for connecting to the database.
- * @returns  {Model} Contact model definition.
+ * Contact model function - Represents the contact information of a user in the system.
+ * @param {Sequelize} sequelize - The Sequelize instance for connecting to the database.
+ * @returns {Model} Contact model definition.
  */
 const ContactModel = (sequelize) => {
 
@@ -37,9 +37,7 @@ const ContactModel = (sequelize) => {
   return Contact;
 };
 
-
 /**
  * Exports the Contact model function.
- * @export ContactModel
  */
-export default ContactModel;
+module.exports = ContactModel;

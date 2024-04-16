@@ -1,9 +1,9 @@
-import { Model, DataTypes } from 'sequelize';
+const { Model, DataTypes } = require('sequelize');
 
 /**
- * Education model function  - Represents the education of a user in the system.
+ * Education model function - Represents the education of a user in the system.
  * @param {*} sequelize - The Sequelize instance for connecting to the database.
- * @returns  {Model} Education model definition.
+ * @returns {Model} Education model definition.
  */
 const EducationModel = (sequelize) => {
 
@@ -37,9 +37,7 @@ const EducationModel = (sequelize) => {
   return Education;
 };
 
-
 /**
  * Exports the Education model function.
- * @export EducationModel
  */
-export default EducationModel;
+module.exports = EducationModel;

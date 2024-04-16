@@ -1,10 +1,9 @@
-import { Model, DataTypes } from 'sequelize';
-
+const { Model, DataTypes } = require('sequelize');
 
 /**
- *  Vendor Profile model function
+ * Vendor Profile model function
  * @param {*} sequelize - The Sequelize instance for connecting to the database.
- * @returns  {Model} VendorProfile model definition.
+ * @returns {Model} VendorProfile model definition.
  */
 const VendorProfileModel = (sequelize) => {
 
@@ -38,7 +37,5 @@ const VendorProfileModel = (sequelize) => {
 
 /**
  * Exports the VendorProfile model function.
- * @export VendorProfileModel
  */
-export default VendorProfileModel;
-
+module.exports = VendorProfileModel;

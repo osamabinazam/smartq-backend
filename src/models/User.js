@@ -1,4 +1,4 @@
-import { Model, DataTypes } from 'sequelize';
+const { Model, DataTypes } = require('sequelize');
 
 /**
  * Defines the User model using Sequelize.
@@ -23,8 +23,8 @@ const UserModel = (sequelize) => {
     
     userid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
     username: { type: DataTypes.STRING(50), allowNull: false, unique: true },
-    email: { type: DataTypes.STRING(100),allowNull: false,unique: true },
-    gender: {type: DataTypes.ENUM('male', 'female', 'other') },
+    email: { type: DataTypes.STRING(100), allowNull: false, unique: true },
+    gender: { type: DataTypes.ENUM('male', 'female', 'other') },
     password: { type: DataTypes.STRING(255), allowNull: false },
     lastlogin: { type: DataTypes.DATE, defaultValue: null },
     usertype: { type: DataTypes.ENUM('vendor', 'customer', 'admin'), defaultValue: 'customer' },
@@ -42,6 +42,5 @@ const UserModel = (sequelize) => {
 
 /**
  * Exposes the User model definition for further use.
- * @export UserModel
  */
-export default UserModel;
+module.exports = UserModel;

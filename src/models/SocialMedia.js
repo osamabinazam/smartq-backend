@@ -1,12 +1,11 @@
-import { Model, DataTypes } from 'sequelize';
+const { Model, DataTypes } = require('sequelize');
 
-
-/** 
- *  Social Media model function
+/**
+ * Social Media model function
  * @param {*} sequelize  - The Sequelize instance for connecting to the database.
- * @returns  {Model} SocialMedia model definition.
+ * @returns {Model} SocialMedia model definition.
  */
-const SocialMediaModel= (sequelize) => {
+const SocialMediaModel = (sequelize) => {
 
   /**
    * Represents a social media account in the system.
@@ -35,6 +34,5 @@ const SocialMediaModel= (sequelize) => {
 
 /**
  * Exports the SocialMedia model function.
- * @export SocialMediaModel
  */
-export default SocialMediaModel;
+module.exports = SocialMediaModel;

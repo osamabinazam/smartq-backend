@@ -1,10 +1,7 @@
-import db from '../models/index.js';
-import ProfileService from '../services/ProfileService.js';
+const db = require('../models/index.js');
+const ProfileService = require('../services/ProfileService.js');
 
 const User = db.UserModel;
-// const Vendor = db.VendorModel;
-// const Customer = db.CustomerProfileModel;
-
 
 /******************************************* Create Profile Controllers ********************************** */
 
@@ -43,8 +40,6 @@ const createVendorProfile = async (req, res) => {
         console.log("Error of not passing correct data", error)
         res.status(500).send("Error of not passing correct data");
     }
-
-
 }
 
 
@@ -419,7 +414,7 @@ const deleteCustomerProfile = async (req, res) => {
 /**
  * Export controller functions as a module 
  */
-export default {
+module.exports = {
     createVendorProfile,
     createCustomerProfile,
     getVendorProfileByUserId,

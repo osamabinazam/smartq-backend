@@ -1,4 +1,4 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+const { Model, DataTypes } = require('sequelize');
 
 /**
  * 
@@ -39,6 +39,5 @@ const CustomerProfileModel = (sequelize) => {
 
 /**
  * Exports the CustomerProfile model function.
- * @export CustomerProfileModel
  */
-export default CustomerProfileModel;
+module.exports = CustomerProfileModel;

@@ -1,18 +1,11 @@
-
-import db from '../models/index.js';
-import ImageService from '../services/ImageService.js';
-
+const db = require('../models/index.js');
+const ImageService = require('../services/ImageService.js');
 
 const User = db.UserModel;
 const Vendor = db.VendorProfileModel;
-const Customer = db.CustomerProfileModel;  
+const Customer = db.CustomerProfileModel;
 
-
-/**
- * Update the user
- */
 const update = async (req, res) => {
-
     if (!req.body) {
         return res.status(400).send({
             message: "Data to update can not be empty!"
@@ -25,7 +18,7 @@ const update = async (req, res) => {
         where: { userid: id }
     })
         .then(num => {
-            if (num == 1) {
+            if (num === 1) {
                 res.status(200).send({
                     message: "User was updated successfully."
                 });
@@ -40,11 +33,8 @@ const update = async (req, res) => {
                 message: "Error updating User with id=" + id
             });
         });
-}
+};
 
-/**
- * Delete the user
- */
 const deleteUser = async (req, res) => {
     const id = req.params.id;
 
@@ -52,7 +42,7 @@ const deleteUser = async (req, res) => {
         where: { userid: id }
     })
         .then(num => {
-            if (num == 1) {
+            if (num === 1) {
                 res.status(200).send({
                     message: "User was deleted successfully!"
                 });
@@ -67,11 +57,8 @@ const deleteUser = async (req, res) => {
                 message: "Could not delete User with id=" + id
             });
         });
-}
+};
 
-/**
- * Get all users
- */
 const getAll = async (req, res) => {
     try {
         const users = await User.findAll();
@@ -89,10 +76,6 @@ const getAll = async (req, res) => {
     }
 };
 
-
-/**
- * Get user by id
- */
 const getById = async (req, res) => {
     const id = req.params.id;
 
@@ -121,10 +104,6 @@ const getById = async (req, res) => {
     }
 };
 
-
-/**
- * Get user by username
- */
 const getByUsername = async (req, res) => {
     const username = req.params.username;
 
@@ -143,7 +122,6 @@ const getByUsername = async (req, res) => {
             return res.status(404).send({ message: "User not found" });
         }
 
-        // Assuming you have an ImageService that can fetch images by user ID
         const images = await ImageService.getImagesByUserId(user.userid);
         const userData = { ...user.dataValues, images };
 
@@ -155,11 +133,6 @@ const getByUsername = async (req, res) => {
     }
 };
 
-
-
-/**
- * Get users by usertype
- */
 const getByUsertype = async (req, res) => {
     const usertype = req.params.usertype;
 
@@ -174,7 +147,6 @@ const getByUsertype = async (req, res) => {
             where: { usertype }
         });
 
-        // Fetch images for all users in parallel
         const usersWithImages = await Promise.all(users.map(async (user) => {
             const images = await ImageService.getImagesByUserId(user.userid);
             return { ...user.dataValues, images };
@@ -188,14 +160,11 @@ const getByUsertype = async (req, res) => {
     }
 };
 
-
-
-
-export default {
+module.exports = {
     update,
     deleteUser,
     getAll,
     getById,
     getByUsername,
-    getByUsertype,
-}
+    getByUsertype
+};

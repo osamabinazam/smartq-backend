@@ -1,15 +1,14 @@
-import { Sequelize } from 'sequelize';
-import db from '../path/to/your/models/index'; 
+const { Sequelize } = require('sequelize');
+const db = require('../path/to/your/models/index');
 
 describe('Queue Model Tests', () => {
-    test('Create and retrieve a queue', async () => {
+    it('Create and retrieve a queue', async () => {
         const newQueue = await db.QueueModel.create({
             currentQueueSize: 0,
             averageServiceTime: 30,
             queueStartTime: "2024-04-05 09:48:37",
             queueEndTime: "2024-04-05 10:48:37",
             queueStatus: 'active',
-
         });
 
         const foundQueue = await db.QueueModel.findByPk(newQueue.queueID);
@@ -17,7 +16,7 @@ describe('Queue Model Tests', () => {
         expect(foundQueue.queueStatus).toEqual('active');
     });
 
-    test('Update a queue', async () => {
+    it('Update a queue', async () => {
         const queue = await db.QueueModel.create({
             currentQueueSize: 0,
             queueStatus: 'active'

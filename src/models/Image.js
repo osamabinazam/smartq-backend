@@ -1,4 +1,4 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+const { Model, DataTypes } = require('sequelize');
 
 /**
  * Represents an image in the system.
@@ -7,7 +7,7 @@ import { Model, DataTypes, Sequelize } from 'sequelize';
  */
 
 const ImageModel = (sequelize) => {
-    class Images extends Model { }
+    class Image extends Model { }
 
     /**
      * Initializes the Images model with predefined fields and options.
@@ -15,7 +15,7 @@ const ImageModel = (sequelize) => {
      * @param {Object} fields - The fields to define the Images model.
      * @constructor Images
      */
-    Images.init(
+    Image.init(
         {
             imageid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true }, // The unique identifier for the image
             type: { type: DataTypes.ENUM('profile', 'cover'), allowNull: false },   // Specifies the image type
@@ -24,17 +24,15 @@ const ImageModel = (sequelize) => {
         },
         {
             sequelize,
-            modelName: "Images",
+            modelName: "Image",
             tableName: "images",
             timestamps: true,
         }
     );
-    return Images;
+    return Image;
 }
 
 /**
  * Exports the Images model function.
- * @export ImageModel
  */
-export default ImageModel;
-
+module.exports = ImageModel;

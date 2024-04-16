@@ -1,9 +1,9 @@
-import { Model, DataTypes, Sequelize } from 'sequelize';
+const { Model, DataTypes, Sequelize } = require('sequelize');
 
 /**
- *  Appointment model function  - Represents an appointment in the system.
- * @param {Sequelize} sequelize  - The Sequelize instance for connecting to the database.
- * @returns  {Model} Appointment model definition.
+ *  Appointment model function - Represents an appointment in the system.
+ * @param {Sequelize} sequelize - The Sequelize instance for connecting to the database.
+ * @returns {Model} Appointment model definition.
  */  
 const AppointmentModel = (sequelize) => {
 
@@ -29,15 +29,13 @@ const AppointmentModel = (sequelize) => {
     modelName: 'Appointment',
     tableName: 'appointments',
     timestamps: true
- 
-});
+  });
 
-return Appointment;
+  return Appointment;
 };
 
 /**
  * Exports the Appointment model function.
- * @export AppointmentModel
+ * @exports AppointmentModel
  */
-export default AppointmentModel;
-
+module.exports = AppointmentModel;

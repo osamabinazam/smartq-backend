@@ -1,25 +1,16 @@
-import express, {json} from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import cookieParser from "cookie-parser";
-import {dirname, join} from "path";
-import {fileURLToPath} from "url";
-import authRoutes from "../routes/AuthRoutes.js";
-import userRoutes from "../routes/UserRoutes.js";
-import imageUploadsRoutes from "../routes/imageUploadsRoutes.js";
-import profileRoutes from "../routes/profileRoutes.js";
-import LocationRoutes from "../routes/LocationRoutes.js";
-import fs from "fs";
-import path from "path";
+const express = require("express");
+const { json } = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser");
+const path = require("path"); // Import path module
+const authRoutes = require("../routes/AuthRoutes.js");
+const userRoutes = require("../routes/UserRoutes.js");
+const imageUploadsRoutes = require("../routes/imageUploadsRoutes.js");
+const profileRoutes = require("../routes/profileRoutes.js");
+const LocationRoutes = require("../routes/LocationRoutes.js");
+const fs = require("fs");
 dotenv.config();
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const imageDirectory = path.join(__dirname, "../../public/images");
-if (!fs.existsSync(imageDirectory)) {
-  fs.mkdirSync(imageDirectory, { recursive: true });
-  console.log("Directory Created Successfully ");
-}
-
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -31,23 +22,24 @@ const coresOption = {
     optionSuccessStatus: 200
 };
 
-
 // Express MiddleWares
 app.use(cors(coresOption));
 app.use(json());
 app.use(cookieParser());
 
+// Define image directory using path module
+const imageDirectory = path.join(__dirname, "../../public/images");
+if (!fs.existsSync(imageDirectory)) {
+  fs.mkdirSync(imageDirectory, { recursive: true });
+  console.log("Directory Created Successfully ");
+}
+
 // Routes
-app.use('/',express.static(join(__dirname, "public")));
+app.use('/', express.static(path.join(__dirname, "public")));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/images', imageUploadsRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/location', LocationRoutes);
 
-export default app;
-
-
-
-
-
+module.exports = app;

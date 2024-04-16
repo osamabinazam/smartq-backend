@@ -1,4 +1,4 @@
-import db from "../models/index.js";
+const db = require("../models/index.js");
 
 const ContactModel = db.ContactModel;
 
@@ -67,10 +67,9 @@ const deleteContact = async (contactId) => {
     }
 }
 
-
-export {
+module.exports = {
     createContact,
     getContactById,
     updateContact,
     deleteContact
-}
+};
