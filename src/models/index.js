@@ -6,36 +6,49 @@ const setupAssociations = require('./associations/associations.js');
 
 const db = {};
 
+/**
+ * Create a new Sequelize instance
+ */
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, dbConfig);
 
+/**
+ * Initialize the database with models and associations
+ * 
+ */
 async function initializeDatabase() {
   try {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
 
-    const modelFiles = fs.readdirSync(__dirname)
-      .filter(file => file.indexOf('.') !== 0 && file.slice(-3) === '.js');
+    const modelFiles = fs.readdirSync(__dirname)                              // Read all files in the current directory
+      .filter(file => file.indexOf('.') !== 0 && file.slice(-3) === '.js');   // Get all model files
 
     for (const file of modelFiles) {
-      console.log("File is : ", file)
-      const modelInit = require(path.join(__dirname, file)); // Import the model initialization function
+      const modelInit = require(path.join(__dirname, file)); // Import the model file
+      
+      // Check if the modelInit is a function
       if (typeof modelInit === 'function') {
         const model = modelInit(sequelize); // Invoke the function with the Sequelize instance
-        db[model.name+"Model"] = model;
+        db[model.name + "Model"] = model;
       }
     }
 
-    console.log("Database db is : ", db);
+    setupAssociations(db);      // Setup model associations
+    db.sequelize = sequelize;   // Export the Sequelize instance
+    db.Sequelize = Sequelize;   // Export Sequelize
 
-    setupAssociations(db); // Assuming associations are set up correctly in this file
-
-    await sequelize.sync({ force: true, alter: true });
+    await sequelize.sync({ force: false, alter: true }); // Sync all models with the database (force: true will drop the tables)
     console.log('All models were synchronized successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
 }
 
-initializeDatabase();
 
+initializeDatabase();         // Initialize the database
+
+/**
+ * Export the db object
+ * 
+ */
 module.exports = db;
