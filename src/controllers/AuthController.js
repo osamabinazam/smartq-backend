@@ -5,8 +5,14 @@ const ImageService = require("../services/ImageService.js");
 const ProfileService = require("../services/ProfileService.js");
 
 const User = db.UserModel;
-const Image = db.ImageModel;
 
+
+/**
+ * Login user and return jwt tokens and user data if successful else return error message
+ * @param {*} req 
+ * @param {*} res 
+ * @returns  {object} tokens and user data
+ */
 const login = async (req, res) => {
     if (!req.body) {
         return res.status(400).send("Request body is missing");
@@ -45,13 +51,19 @@ const login = async (req, res) => {
     }
 };
 
+
+/**
+ * Register a new user and return jwt tokens and user data if successful else return error message
+ * @param {*} req 
+ * @param {*} res  
+ * @returns  {object} tokens and user data
+ */
 const register = async (req, res) => {
     if (!req.body){
         return res.status(400).send("Request body is missing")
     }
 
     const hashPassword = await bcrypt.hash(req.body.password, 10);
-    const currentDate = new Date();
 
     const user ={
         username: req.body.username,
@@ -88,7 +100,12 @@ const register = async (req, res) => {
             });
         }
 
-        res.status(201).send({tokens:tokens, user: user.dataValues, message: "User registered successfully"})
+        res
+        .cookie("access_token", tokens.accessToken, { httpOnly: true })
+        .cookie("refresh_token", tokens.refreshToken, { httpOnly: true })
+        .cookie("user", user.dataValues)
+        .status(201)
+        .send({tokens:tokens, user: user.dataValues, message: "User registered successfully"})
     }).catch((err) => {
         res.status(500).send(err)
     });
