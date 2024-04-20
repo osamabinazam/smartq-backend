@@ -2,6 +2,11 @@ const db = require('../models/index.js');
 
 const Image = db.ImageModel;
 
+/**
+ * Creates a new image entry in the database.
+ * @param {Object} imageDetails - The details of the image to be created.
+ * @returns {Promise<Object>} The created image object.
+ */
 const createImage = async (imageDetails) => {
     try {
         return await Image.create(imageDetails);
@@ -12,6 +17,12 @@ const createImage = async (imageDetails) => {
     }
 };
 
+/**
+ * Updates an existing image entry in the database.
+ * @param {Object} imageDetails - The details of the image to update.
+ * @param {number} userId - The ID of the user associated with the image.
+ * @returns {Promise<number>} The number of affected rows.
+ */
 const updateImage = async (imageDetails, userId) => {
     try {
         const [updatedRows] = await Image.update(imageDetails, { where: { userid: userId } });
@@ -25,6 +36,12 @@ const updateImage = async (imageDetails, userId) => {
     }
 };
 
+
+/**
+ * Deletes an image entry from the database.
+ * @param {number} imageId - The ID of the image to delete.
+ * @returns {Promise<number>} The number of rows affected (deleted).
+ */
 const deleteImage = async (imageId) => {
     try {
         const deletedRows = await Image.destroy({ where: { imageid: imageId } });
@@ -38,6 +55,13 @@ const deleteImage = async (imageId) => {
     }
 };
 
+
+
+/**
+ * Retrieves images by user ID, categorizing them as profile and cover photos.
+ * @param {number} userId - The user ID to search images for.
+ * @returns {Promise<Object>} An object containing the profile and cover photos.
+ */
 const getImagesByUserId = async (userId) => {
     try {
         const images = await Image.findAll({ where: { userid: userId } });

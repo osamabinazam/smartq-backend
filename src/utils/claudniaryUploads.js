@@ -92,3 +92,75 @@ module.exports = {
   uploadSingleMiddleware,
   uploadMultipleMiddleware,
 };
+
+
+
+// const multer = require("multer");
+// const cloudinary = require('cloudinary').v2;
+// const streamifier = require('streamifier');
+
+// // Environment variables should be used for sensitive information
+// cloudinary.config({
+//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//   api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET
+// });
+
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage: storage });
+
+// /**
+//  * Uploads a single file to Cloudinary.
+//  * @param {Object} file - file object containing buffer and other metadata.
+//  * @returns {Object} - object containing URL and public ID of the uploaded file.
+//  */
+// const uploadSingleFile = async (file) => {
+//   try {
+//     return await new Promise((resolve, reject) => {
+//       const uploadOptions = {
+//         folder: "images",
+//         resource_type: "auto",
+//         public_id: `${Date.now()}`
+//       };
+
+//       const stream = cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
+//         if (error) {
+//           console.error('Upload Error:', error);
+//           reject(new Error("Failed to upload file to Cloudinary."));
+//         } else {
+//           resolve({ imageUrl: result.secure_url, publicId: result.public_id });
+//         }
+//       });
+
+//       streamifier.createReadStream(file.buffer).pipe(stream);
+//     });
+//   } catch (error) {
+//     console.error('Cloudinary API Error:', error);
+//     throw new Error("Failed to upload file to Cloudinary");
+//   }
+// };
+
+// /**
+//  * Uploads multiple files to Cloudinary.
+//  * @param {Array} files - array of file objects to upload.
+//  * @returns {Array} - array of objects containing URLs and public IDs of uploaded files.
+//  */
+// const uploadMultipleFiles = async (files) => {
+//   const uploadPromises = files.map(file => uploadSingleFile(file));
+//   try {
+//     return await Promise.all(uploadPromises);
+//   } catch (error) {
+//     console.error('Batch Upload Error:', error);
+//     throw new Error("Failed to upload files to Cloudinary");
+//   }
+// };
+
+// const uploadSingleMiddleware = upload.single("image");
+// const uploadMultipleMiddleware = upload.array("images");
+
+// module.exports = {
+//   uploadSingleFile,
+//   uploadMultipleFiles,
+//   uploadSingleMiddleware,
+//   uploadMultipleMiddleware,
+// };
