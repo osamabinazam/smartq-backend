@@ -3,12 +3,39 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    /**
-     * Add altering commands here.
-     *
-     * Example:
-     * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
-     */
+    await queryInterface.createTable('vendor_profiles', {
+      vendorprofileid: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
+      },
+      businessname: {
+        type: DataTypes.STRING(255),
+        allowNull: true
+      },
+      businesstype: {
+        type: DataTypes.STRING(255),
+        allowNull: true
+      },
+      bio: {
+        type: DataTypes.TEXT,
+        allowNull: true
+      },
+      dob: {
+        type: DataTypes.DATEONLY,
+        allowNull: true
+      },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP')
+      }
+    });
   },
 
   async down (queryInterface, Sequelize) {
@@ -18,5 +45,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
+    await queryInterface.dropTable('vendor_profiles');
   }
 };
