@@ -1,8 +1,9 @@
-const db = require("../models/index.js");
+
 const bcrypt = require('bcrypt');
 const jwtTokens = require('../utils/jwt-helper.js');
 const ImageService = require("../services/ImageService.js");
 const ProfileService = require("../services/ProfileService.js");
+const db = require('../models/index.js')
 
 const User = db.UserModel;
 
@@ -72,6 +73,7 @@ const register = async (req, res) => {
         gender: req.body.gender,
         usertype: req.body.usertype,
     }
+
 
     User.create(user).then((user) => {
         if (!user){

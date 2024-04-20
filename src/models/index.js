@@ -32,7 +32,6 @@ async function initializeDatabase() {
         db[model.name + "Model"] = model;
       }
     }
-
     setupAssociations(db);      // Setup model associations
     db.sequelize = sequelize;   // Export the Sequelize instance
     db.Sequelize = Sequelize;   // Export Sequelize

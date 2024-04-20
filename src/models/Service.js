@@ -1,7 +1,7 @@
 const { Model, DataTypes } = require('sequelize');
 
 /**
- * Service model function - Represents a service in the system.
+ * Service model function - Represents a service of vendor in the system.
  * @param {*} sequelize - The Sequelize instance for connecting to the database.
  * @returns {Model} Service model definition.
  */
