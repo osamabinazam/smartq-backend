@@ -67,9 +67,26 @@ const deleteContact = async (contactId) => {
     }
 }
 
+/**
+ * get Contact by userid
+ * @param {number} userId - user ID
+ * @returns {Object} - The Contact object
+ * @throws {Error} - Throws error if the operation fails
+ */
+
+const getContactByUserId = async (userId) => {
+    try {
+        return await ContactModel.findAll({ where: { userid: userId } });
+    } catch (error) {
+        console.error("Error fetching contact:", error);
+        throw new Error("Failed to fetch contact.");
+    }
+}
+
 module.exports = {
     createContact,
     getContactById,
     updateContact,
-    deleteContact
+    deleteContact,
+    getContactByUserId
 };
