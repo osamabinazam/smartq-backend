@@ -1,7 +1,6 @@
-const db = require('../models/index.js');
+
 const CategoryService = require('../services/CategoryService.js');
 
-const Category = db.CategoryModel;
 
 /**
  * Create a new Category
@@ -16,24 +15,48 @@ const createCategory = async (req, res) => {
         });
     }
 
-    if (!req.body.name) {
+    if (!req.body.categoryname) {
         return res.status(400).json({
             message: 'Category name is required',
         });
     }
 
     const categoryData = {
-        name: req.body.name,
-        description: req.body.description,
+        categoryname: req.body.categoryname,
+        // description: req.body.description,
     };
 
     try {
+
+        console.log("Category Data: ", categoryData)
+
         const category = await CategoryService.createCategory(categoryData);
         return res.status(201).json(category);
     } catch (error) {
         console.error('Failed to create category:', error);
         return res.status(500).json({
             message: 'Failed to create category',
+            error: error.message,
+        });
+    }
+}
+
+
+
+/**
+ * Get All Categories
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} - The list of Categories
+ */
+const getAllCategories = async (req, res) => {
+    try {
+        const categories = await CategoryService.getAllCategories();
+        return res.status(200).json(categories);
+    } catch (error) {
+        console.error('Failed to fetch categories:', error);
+        return res.status(500).json({
+            message: 'Failed to fetch categories',
             error: error.message,
         });
     }
@@ -84,8 +107,8 @@ const updateCategory = async (req, res) => {
     }
 
     const categoryDetails = {
-        name: req.body.name,
-        description: req.body.description,
+        categoryname: req.body.categoryname,
+        // description: req.body.description,
     };
 
     try {
@@ -133,5 +156,6 @@ module.exports = {
     getCategoryById,
     updateCategory,
     deleteCategory,
+    getAllCategories
 };
 // Path: src/services/CategoryService.js
