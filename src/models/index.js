@@ -35,7 +35,6 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.passw
     console.log('All models were synchronized successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
-    return; // Exit if there's a database connection error
   }
 
 // }
