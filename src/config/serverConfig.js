@@ -9,6 +9,9 @@ const userRoutes = require("../routes/UserRoutes.js");
 const imageUploadsRoutes = require("../routes/imageUploadsRoutes.js");
 const profileRoutes = require("../routes/profileRoutes.js");
 const LocationRoutes = require("../routes/LocationRoutes.js");
+const CategoryRoutes = require("../routes/CategoryRoutes.js");
+const ContactRoutes = require("../routes/ContactRoutes.js");
+const ProvideServiceRoutes = require("../routes/ProvideServiceRoutes.js")
 const fs = require("fs");
 dotenv.config();
 
@@ -41,5 +44,10 @@ app.use('/api/users', userRoutes);
 app.use('/api/images', imageUploadsRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/location', LocationRoutes);
+app.use('/api/category', CategoryRoutes);
+app.use('/api/contact', ContactRoutes);
+app.use('/api/service', ProvideServiceRoutes);
+
+
 
 module.exports = app;
