@@ -1,5 +1,6 @@
 const db = require('../models/index.js');
 const ProfileService = require('../services/ProfileService.js');
+const ContactService = require('../services/ContactService.js');
 
 const User = db.UserModel;
 
@@ -28,6 +29,23 @@ const createVendorProfile = async (req, res) => {
             userid: req.user.userid
         }
         try {
+
+            try{
+            const vendorProfile = await ProfileService.getVendorProfileByUserId(req.user.userid);
+                if (vendorProfile) {
+                    const updatedVendorProfile = await ProfileService.updateVendorProfile(vendorProfile.vendorprofileid, Vendor);
+                    return res.status(200).send({updatedVendorProfile, message:"Successfully updated "});
+                }
+
+                else{
+                    console.log("Vendor Profile does not exist")
+                }
+            
+            }catch(error){
+                console.error("Error fetching vendor profile:", error);
+                return res.status(500).send({ message: 'Failed to fetch vendor profile.' });
+            }
+
             const vendor = await ProfileService.createVendorProfile(Vendor);
             res.status(201).send({ vendor, message: "Vendor Profile Created Successfully" });
         }
@@ -108,6 +126,8 @@ const getVendorProfileByUserId = async (req, res) => {
         if (!vendorProfile) {
             return res.status(404).send({ message: 'Vendor Profile not found.' });
         }
+
+        
         return res.status(200).send(vendorProfile);
     }
     catch (error) {
@@ -168,11 +188,16 @@ const getCustomerProfileByUserId = async (req, res) => {
         return res.status(400).send({ message: 'User ID is required.' });
     }
 
+    // Get Contact Detail 
+    const contact = await ContactService.getContactByUserId(userId);
+
+
     try {
         const customerProfile = await ProfileService.getCustomerProfileById(userId);
         if (!customerProfile) {
             return res.status(404).send({ message: 'Customer Profile not found.' });
         }
+        customerProfile.contact = contact;
         return res.status(200).send(customerProfile);
     }
     catch (error) {

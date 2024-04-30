@@ -2,6 +2,7 @@ const db = require('../models/index.js');
 
 const VendorProfileModel = db.VendorProfileModel;
 const CustomerProfileModel = db.CustomerProfileModel;
+const Service = db.ServiceModel;
 
 /*********************************************************************************************
  * ************ Vendor Profile Services ******************************************************
@@ -19,7 +20,7 @@ const createVendorProfile = async (vendorProfile) => {
 
 const getVendorProfileById = async (vendorProfileId) => {
     try {
-        return await VendorProfileModel.findByPk(vendorProfileId);
+        return await VendorProfileModel.findByPk(vendorProfileId, { include: 'services'});
     } catch (error) {
         console.error("Error fetching vendor profile:", error);
         throw new Error("Failed to fetch vendor profile.");
@@ -32,6 +33,8 @@ const updateVendorProfile = async (vendorProfileId, vendorProfileDetails) => {
         if (updatedRows === 0) {
             throw new Error("Vendor Profile not found or nothing to update.");
         }
+
+        console.log("Successfully Updated Vendor Profile")
         return updatedRows;
     } catch (error) {
         console.error("Error updating vendor profile:", error);
@@ -54,12 +57,16 @@ const deleteVendorProfile = async (vendorProfileId) => {
 
 const getAllVendorProfiles = async () => {
     try {
-        return await VendorProfileModel.findAll();
+        return await VendorProfileModel.findAll({
+            include: 'services'
+        });
     } catch (error) {
         console.error("Error fetching vendor profiles:", error);
         throw new Error("Failed to fetch vendor profiles.");
     }
 }
+
+
 
 /********************************************************************************************
  * ************ Customer Profile Services ***************************************************
@@ -77,7 +84,9 @@ const createCustomerProfile = async (customerProfile) => {
 
 const getCustomerProfileById = async (customerProfileId) => {
     try {
-        return await CustomerProfileModel.findByPk(customerProfileId);
+        return await CustomerProfileModel.findByPk(customerProfileId,{
+            include: 'user'
+        });
     } catch (error) {
         console.error("Error fetching customer profile:", error);
         throw new Error("Failed to fetch customer profile.");
@@ -86,7 +95,9 @@ const getCustomerProfileById = async (customerProfileId) => {
 
 const updateCustomerProfile = async (customerProfileId, customerProfileDetails) => {
     try {
-        const [updatedRows] = await CustomerProfileModel.update(customerProfileDetails, { where: { customerprofileid: customerProfileId } });
+        const [updatedRows] = await CustomerProfileModel.update(customerProfileDetails, { where: { customerprofileid: customerProfileId }},{
+            include: 'user'
+        } );
         if (updatedRows === 0) {
             throw new Error("Customer Profile not found or nothing to update.");
         }
@@ -112,7 +123,10 @@ const deleteCustomerProfile = async (customerProfileId) => {
 
 const getAllCustomerProfiles = async () => {
     try {
-        return await CustomerProfileModel.findAll();
+        return await CustomerProfileModel.findAll( {
+            include: 'user'
+        
+        } );
     } catch (error) {
         console.error("Error fetching customer profiles:", error);
         throw new Error("Failed to fetch customer profiles.");
