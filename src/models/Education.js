@@ -23,9 +23,9 @@ const EducationModel = (sequelize) => {
   Education.init({
     educationid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
     school: { type: DataTypes.STRING(255), allowNull: false },
-    startat: { type: DataTypes.DATEONLY },
-    endat: { type: DataTypes.DATEONLY },
-    degree: { type: DataTypes.INTEGER },
+    degree: { type: DataTypes.STRING(255) },
+    startAt: { type: DataTypes.DATEONLY },
+    endAt: { type: DataTypes.DATEONLY },
     description: { type: DataTypes.TEXT },
   }, {
     sequelize,

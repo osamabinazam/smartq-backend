@@ -20,7 +20,9 @@ const createVendorProfile = async (vendorProfile) => {
 
 const getVendorProfileById = async (vendorProfileId) => {
     try {
-        return await VendorProfileModel.findByPk(vendorProfileId, { include: 'services'});
+        return await VendorProfileModel.findByPk(vendorProfileId, { 
+            include: ['services', 'educations']
+        });
     } catch (error) {
         console.error("Error fetching vendor profile:", error);
         throw new Error("Failed to fetch vendor profile.");
@@ -58,7 +60,7 @@ const deleteVendorProfile = async (vendorProfileId) => {
 const getAllVendorProfiles = async () => {
     try {
         return await VendorProfileModel.findAll({
-            include: 'services'
+            include: ['services', 'educations']
         });
     } catch (error) {
         console.error("Error fetching vendor profiles:", error);

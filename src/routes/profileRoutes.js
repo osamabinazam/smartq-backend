@@ -1,4 +1,5 @@
 const ProfileController = require('../controllers/ProfileController.js');
+const EducationController = require('../controllers/EducationController.js');
 const authenticateToken = require('../middlewares/authorization.js');
 const authorizeRoles = require('../middlewares/authorizeRoles.js');
 const express = require('express');
@@ -10,6 +11,12 @@ router.get('/vendor', authenticateToken, authorizeRoles('vendor', 'customer'), P
 router.get('/vendor/:id', authenticateToken, authorizeRoles('vendor', 'customer'), ProfileController.getVendorProfileById);
 router.put('/vendor/:id', authenticateToken, authorizeRoles('vendor'), ProfileController.updateVendorProfile);
 router.delete('/vendor/:id', authenticateToken, authorizeRoles('vendor'), ProfileController.deleteVendorProfile);
+
+// Vendor's Education Routes
+router.post('/vendor/:id/education', authenticateToken, authorizeRoles('vendor'), EducationController.createEducation);
+
+// Admin Profile Routes
+
 
 // Customer Profile Routes
 router.post('/customer', authenticateToken, authorizeRoles('customer', 'admin', 'vendor'), ProfileController.createCustomerProfile);
