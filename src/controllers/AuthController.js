@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt');
 const jwtTokens = require('../utils/jwt-helper.js');
 const ImageService = require("../services/ImageService.js");
 const ProfileService = require("../services/ProfileService.js");
+const {sendEmailWithOTP} = require('../utils/emailTransporter.js');
+const OPTService = require('../services/OTPService.js');
 const db = require('../models/index.js')
 
 const User = db.UserModel;
@@ -113,6 +115,89 @@ const register = async (req, res) => {
     });
 }
 
+
+/**
+ * Get email from user for password reset and send OTP to the email
+ * @param {*} req 
+ * @param {*} res 
+ */
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    console.log("Response Body: ", req.body);
+
+    if (!email) {
+        return res.status(400).send("Email address is required.");
+    }
+
+    try {
+        const user = await User.findOne({ where: { email } });
+        if (!user) {
+            return res.status(404).send("User not found.");
+        }
+
+        console.log("Generating OTP for email:", email)
+
+        const {otp, info } = await sendEmailWithOTP(email);
+        console.log("OTP:", otp, "\nInfo:", info);
+
+        
+        // create OTP record in the database
+        const optData = {
+            email: email,
+            otp: otp,
+            expireTime:new Date(Date.now() + 600000),
+        };
+
+        // create OTP record in the database
+        const otpRecord = await OPTService.createOTP(optData);
+        console.log("OTP Record:", otpRecord);
+
+
+        return res.status(200).send("OTP has been sent to your email. Please check your inbox to proceed.");
+    } catch (error) {
+        console.error("Error in requestPasswordReset:", error);
+        res.status(500).send("An error occurred while processing your request.");
+    }
+}
+
+
+/**
+ * Varify the OPT
+ * @param {*} req
+ * @param {*} res
+ */
+const verifyOTP = async (req, res) => {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+        return res.status(400).send("Email and OTP are required.");
+    }
+
+    try {
+        const otpRecord = await OPTService.getOTPByEmailAndExpireTime(email, 600000);
+        if (!otpRecord) {
+            return res.status(404).send("OTP not found or expired.");
+        }
+
+        if (otpRecord.otp !== otp) {
+            return res.status(401).send("Invalid OTP.");
+        }
+
+        return res.status(200).send("OTP verified successfully.");
+    } catch (error) {
+        console.error("Error in verifyOTP:", error);
+        res.status(500).send("An error occurred while verifying the OTP.");
+    }
+}
+
+
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const resetPassword = async (req, res) => {
     console.log(req.body);
     
@@ -155,6 +240,9 @@ const resetPassword = async (req, res) => {
     });
 }
 
+
+
+
 const logout = async (req, res) => {
     console.log(req.body),
     res.send("User has logged out")
@@ -165,4 +253,6 @@ module.exports = {
     register,
     resetPassword,
     logout,
+    forgotPassword,
+    verifyOTP
 };
