@@ -28,8 +28,8 @@ const uploadSingleFile = async (file) => {
           }
         }
       );
-
-      streamifier.createReadStream(file.buffer).pipe(stream);
+      const bufferData = Buffer.from(file.buffer);
+      streamifier.createReadStream(bufferData).pipe(stream);
     });
 
     return {

@@ -22,13 +22,15 @@ const uploadImage = async (req, res) => {
         const file = req.files[fileType][0];
         const newImage = await claudniaryUploads.uploadSingleFile(file.buffer, fileType);
 
-        const savedImage = await Image.create({
-          type: fileType,
+        const imageData = {
+          type: fileType === 'profile'? 'profile' : 'cover', // Corrected 'profile' to 'cover
           path: newImage.imageUrl,
-          publicId: newImage.publicId, // Ensure your model supports storing the publicId
+          publicId: newImage.publicId,
           imagealttext: `${fileType}`,
           userid: user.userid,
-        });
+        };
+
+        const savedImage = await Image.create(imageData);
 
         savedImages.push(savedImage);
       }

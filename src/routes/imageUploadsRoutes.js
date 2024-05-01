@@ -10,7 +10,7 @@ const authorizeRoles = require('../middlewares/authorizeRoles.js');
 // POST route for uploading images
 router.post('/upload', 
     authenticateToken, 
-    authorizeRoles(['vendor', 'customer', 'admin']), // Correct roles array syntax
+    authorizeRoles('vendor', 'customer', 'admin'), // Correct roles array syntax
     upload, 
     imageProcessingMiddleware, 
     uploadImage
@@ -19,7 +19,7 @@ router.post('/upload',
 // PUT route for updating images
 router.put('/update', 
     authenticateToken, 
-    authorizeRoles(['vendor', 'customer', 'admin']), // Correct roles array syntax
+    authorizeRoles('vendor', 'customer', 'admin'), // Correct roles array syntax
     upload, 
     imageProcessingMiddleware, 
     updateImage
@@ -28,7 +28,7 @@ router.put('/update',
 // DELETE route for deleting an image
 router.delete('/delete/:imageid', // Correct method to define route
     authenticateToken, 
-    authorizeRoles(['vendor', 'customer']), 
+    authorizeRoles('vendor', 'customer'), 
     deleteImage
 );
 
