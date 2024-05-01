@@ -96,8 +96,8 @@ db.VendorProfileModel.belongsToMany(db.ServiceModel, {
     db.ServiceModel.belongsTo(db.CategoryModel, { foreignKey: 'categoryid', as: 'category' });
 
     // Education and Certificate (Note Education can have one certificate)
-    db.CertificateModel.hasOne(db.EducationModel, { foreignKey: 'certificateid', as: 'education' });
-    db.EducationModel.belongsTo(db.CertificateModel, { foreignKey: 'certificateid', as: 'certificate' });
+    // db.CertificateModel.hasOne(db.EducationModel, { foreignKey: 'certificateid', as: 'education' });
+    // db.EducationModel.belongsTo(db.CertificateModel, { foreignKey: 'certificateid', as: 'certificate' });
 
 
 

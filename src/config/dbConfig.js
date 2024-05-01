@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 /**
  * Database configuration object
  * @type {Object}
@@ -15,10 +17,15 @@
  */
 const dbConfig = {
     host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER ||'postgres',
-    password: process.env.DB_PASS ||  'toor',
+    user: process.env.DB_USER || 'postgres',
+    password:process.env.DB_PASS || 'toor',
     database: process.env.DB_NAME || 'smartq_db',
     dialect: process.env.DB_DIALECT || 'postgres',
+    dialectOptions: {
+        ssl: {
+            require: process.env.DB_SSL || false,
+        }
+    },
     pool: {
         max: 5,
         min: 1, 
