@@ -1,5 +1,6 @@
 const ProfileController = require('../controllers/ProfileController.js');
 const EducationController = require('../controllers/EducationController.js');
+const OperatingHourController = require('../controllers/OperatingHourController.js');
 const authenticateToken = require('../middlewares/authorization.js');
 const authorizeRoles = require('../middlewares/authorizeRoles.js');
 const express = require('express');
@@ -15,6 +16,8 @@ router.delete('/vendor/:id', authenticateToken, authorizeRoles('vendor'), Profil
 // Vendor's Education Routes
 router.post('/vendor/:id/education', authenticateToken, authorizeRoles('vendor'), EducationController.createEducation);
 
+// Vendor's Operating Hours Routes
+router.post('/vendor/:id/operatinghour', authenticateToken, authorizeRoles('vendor'), OperatingHourController.createOperatingHours);
 // Admin Profile Routes
 
 
