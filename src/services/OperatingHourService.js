@@ -68,4 +68,4 @@ const deleteOperatingHours = async (operatingHoursId) => {
     }
 }
 
-module.exports = { createOperatingHours, getOperatingHoursById, updateOperatingHours, deleteOperatingHours };
+module.exports = { createOperatingHours, getOperatingHoursByProfileId, updateOperatingHours, deleteOperatingHours };
