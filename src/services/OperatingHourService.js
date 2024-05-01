@@ -1,6 +1,6 @@
 const db = require("../models/index.js");
 
-const OperatingHoursModel = db.OperatingHoursModel;
+const OperatingHourModel = db.OperatingHourModel;
 
 /**
  * Create a new OperatingHours
@@ -10,7 +10,7 @@ const OperatingHoursModel = db.OperatingHoursModel;
  */
 const createOperatingHours = async (operatingHours) => {
     try {
-        return await OperatingHoursModel.create(operatingHours);
+        return await OperatingHourModel.create(operatingHours);
     } catch (error) {
         console.error("Error creating operating hours:", error);
         throw new Error("Failed to create operating hours.");
@@ -18,19 +18,20 @@ const createOperatingHours = async (operatingHours) => {
 }
 
 /**
- * Get OperatingHours by ID
- * @param {number} operatingHoursId - OperatingHours ID
+ * Get OperatingHours by vendor Profile ID
+ * @param {number} profileId - Profile ID
  * @returns {Object} - The OperatingHours object
  * @throws {Error} - Throws error if the operation fails
  */
-const getOperatingHoursById = async (operatingHoursId) => {
+const getOperatingHoursByProfileId = async (profileId) => {
     try {
-        return await OperatingHoursModel.findByPk(operatingHoursId);
+        return await OperatingHourModel.findAll({ where: { vendorprofileid: profileId } });
     } catch (error) {
         console.error("Error fetching operating hours:", error);
         throw new Error("Failed to fetch operating hours.");
     }
 }
+
 
 /**
  * Update OperatingHours by ID

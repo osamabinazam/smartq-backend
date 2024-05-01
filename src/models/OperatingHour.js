@@ -20,7 +20,10 @@ const OperatingHourModel = (sequelize) => {
    */
   OperatingHour.init({
     openinghoursid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-    weekday: { type: DataTypes.STRING(10) },
+    weekday: { 
+      type: DataTypes.ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'), 
+      allowNull: true
+    },
     opentime: { type: DataTypes.TIME },
     closetime: { type: DataTypes.TIME },
     isclosed: { type: DataTypes.BOOLEAN }
