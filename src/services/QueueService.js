@@ -4,9 +4,6 @@ const QueueModel = db.QueueModel;
 
 /**
  * Create a new Queue
- * @param {Object} queue - Queue object
- * @returns {Object} - The created Queue object
- * @throws {Error} - Throws error if the operation fails
  */
 const createQueue = async (queue) => {
     try {
@@ -19,18 +16,11 @@ const createQueue = async (queue) => {
 
 /**
  * Get Queue by ID
- * @param {number} queueId - Queue ID
- * @returns {Object} - The Queue object
- * @throws {Error} - Throws error if the operation fails
  */
 const getQueueById = async (queueId) => {
     try {
-        return await QueueModel.findByPk(queueId,{
-            include: [
-                { model: db.AppointmentModel },
-                { model: db.ServiceModel }
-            ]
-        
+        return await QueueModel.findByPk(queueId, {
+            include: 'appointments'
         });
     } catch (error) {
         console.error("Error fetching queue:", error);
@@ -40,14 +30,12 @@ const getQueueById = async (queueId) => {
 
 /**
  * Update Queue by ID
- * @param {number} queueId - Queue ID
- * @param {Object} queueDetails - Queue details to update
- * @returns {Object} - The updated Queue object
- * @throws {Error} - Throws error if the operation fails
  */
+
+
 const updateQueue = async (queueId, queueDetails) => {
     try {
-        const [updatedRows] = await QueueModel.update(queueDetails, { where: { queueid: queueId } });
+        const [updatedRows] = await QueueModel.update(queueDetails, { where: { queueID: queueId } });
         if (updatedRows === 0) {
             throw new Error("Queue not found or nothing to update.");
         }
@@ -58,17 +46,17 @@ const updateQueue = async (queueId, queueDetails) => {
     }
 }
 
+
+
 /**
  * Delete Queue by ID
- * @param {number} queueId - Queue ID
- * @returns {number} - The number of deleted rows
- * @throws {Error} - Throws error if the operation fails
+
  */
 const deleteQueue = async (queueId) => {
     try {
-        return await QueueModel.destroy({ 
+        return await QueueModel.destroy({
             where: { queueid: queueId },
-            include: [AppointmentModel] 
+            include: [AppointmentModel]
         });
     } catch (error) {
         console.error("Error deleting queue:", error);
@@ -76,11 +64,11 @@ const deleteQueue = async (queueId) => {
     }
 }
 
+
+
 /**
  * Get Queue By Vendor ID and also include the appointments and services
- * @param {number} vendorId - Vendor ID
- * @returns {Object} - The Queue object
- * @throws {Error} - Throws error if the operation fails
+
  */
 const getQueueByVendorId = async (vendorId) => {
     try {
@@ -98,45 +86,44 @@ const getQueueByVendorId = async (vendorId) => {
     }
 }
 
+
+
 /**
  * Get Queues By Vendor Profile
- * @param {number} vendorProfile - Vendor Profile
- * @returns {Object} - The Queue object
- * @throws {Error} - Throws error if the operation fails
+
  */
 const getQueuesByVendorProfile = async (vendorProfile) => {
     try {
-        return await QueueModel.findAll({ 
+        return await QueueModel.findAll({
             where: { vendorprofile: vendorProfile },
             order: [['createdAt', 'DESC']],
             include: [
                 { model: db.AppointmentModel },
                 { model: db.ServiceModel }
             ]
-    });
+        });
     } catch (error) {
         console.error("Error fetching queue:", error);
         throw new Error("Failed to fetch queue.");
     }
 }
 
+
+
 /**
  * Get Queue In the range of start time and end time
- * @param {number} startTime - Start Time
- * @param {number} endTime - End Time
- * @returns {Object} - The Queue object
- * @throws {Error} - Throws error if the operation fails
+
  */
 const getQueueByTimeRange = async (startTime, endTime) => {
     try {
-        return await QueueModel.findAll({ 
+        return await QueueModel.findAll({
             where: { starttime: startTime, endtime: endTime },
             order: [['createdAt', 'DESC']],
             include: [
                 { model: db.AppointmentModel },
                 { model: db.ServiceModel }
             ]
-    });
+        });
     } catch (error) {
         console.error("Error fetching queue:", error);
         throw new Error("Failed to fetch queue.");
@@ -145,19 +132,18 @@ const getQueueByTimeRange = async (startTime, endTime) => {
 
 
 /**
- * Get Queues By Queue Status
- * @param {string} queueStatus - Queue Status
- * @returns {Object} - The Queue object
- * @throws {Error} - Throws error if the operation fails
+ * Get Queues By Queue Status (active, inactive, full, etc)
  */
 const getQueuesByQueueStatus = async (queueStatus) => {
     try {
-        return await QueueModel.findAll({ where: { status: queueStatus },
+        return await QueueModel.findAll({
+            where: { status: queueStatus },
             order: [['createdAt', 'DESC']],
             include: [
                 { model: db.AppointmentModel },
                 { model: db.ServiceModel }
-            ]});
+            ]
+        });
     } catch (error) {
         console.error("Error fetching queue:", error);
         throw new Error("Failed to fetch queue.");

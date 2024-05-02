@@ -1,5 +1,5 @@
 const QueueService = require('../services/QueueService');
-const VendorProfileService = require('../services/VendorProfileService');
+const ProfileService = require('../services/ProfileService');
 const ProvideService = require('../services/ProvideService');
 
 /**
@@ -22,8 +22,7 @@ const createQueue = async (req, res) => {
     }
 
     // Get the vendor profile ID Using the userID
-    const vendorProfile = await VendorProfileService.getVendorProfileByUserId(req.user.id);
-    console.log("Vendoe Profile Is : ", vendorProfile);
+    const vendorProfile = await ProfileService.getVendorProfileByUserId(req.user.userid);
     // Check if the vendor profile is not found
     if (!vendorProfile) {
         return res.status(404).json({ error: "Vendor profile not found." });
@@ -50,3 +49,10 @@ const createQueue = async (req, res) => {
         return res.status(500).json({ error: "Failed to create queue." });
     }
 }
+
+/**
+ * exports the createQueue function
+ * @exports createQueue
+ */
+
+module.exports = {createQueue};
