@@ -112,9 +112,9 @@ const setupAssociations = (db) => {
 
 
 
-  // Appointment and Request (Note Appointment can have one request)
-  db.RequestModel.hasOne(db.AppointmentModel, { foreignKey: 'requestid', as: 'appointment' });
-  db.AppointmentModel.belongsTo(db.RequestModel, { foreignKey: 'requestid', as: 'request' });
+  // // Appointment and Request (Note Appointment can have one request)
+  // db.RequestModel.hasOne(db.AppointmentModel, { foreignKey: 'requestid', as: 'appointment' });
+  // db.AppointmentModel.belongsTo(db.RequestModel, { foreignKey: 'requestid', as: 'request' });
 
 
   // Request and Queue (Note Request can have one queue)

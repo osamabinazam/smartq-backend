@@ -1,4 +1,8 @@
 const AppointmentService = require('../services/AppointmentService');
+const ProfileService = require('../services/ProfileService');
+const ProvideService = require('../services/ProvideService');
+const QueueService = require('../services/QueueService');
+
 
 /**
  * Create Vendor's Appointment
@@ -14,7 +18,7 @@ const createAppointment = async (req, res) => {
         });
     }
 
-    if (!req.body.vendorid || !req.body.customerid || !req.body.serviceid || !req.body.queueid || !req.body.date || !req.body.time) {
+    if (!req.body.appointmentDateTime || !req.body.appointmentStatus || !req.body.customerprofileid || !req.body.vendorprofileid || !req.body.serviceid || !req.body.queueid) {
         return res.status(400).json({
             message: 'All fields are required',
         });
@@ -26,17 +30,106 @@ const createAppointment = async (req, res) => {
         });
     }
 
+    console.log("req.user", req.user)
+
+    // Check if the user is a customer or vendor
+    if (req.user.usertype !== 'customer') {
+        return res.status(403).json({
+            message: 'Forbidden. Only customers can create appointments.',
+        });
+    }
+
+
+
+    //Check if the customer profile exists
+    const customerProfile = await ProfileService.getCustomerProfileByUserId(req.user.userid);
+
+    if (!customerProfile) {
+        return res.status(404).json({
+            message: 'Customer profile not found.',
+        });
+    }
+
+    // Check if the vendor profile exists
+    const vendorProfile = await ProfileService.getVendorProfileById(req.body.vendorprofileid);
+
+    if (!vendorProfile) {
+        return res.status(404).json({
+            message: 'Vendor profile not found.',
+        });
+    }
+
+    // Check if the service exists
+    const service = await ProvideService.getServiceById(req.body.serviceid);
+
+    if (!service) {
+        return res.status(404).json({
+            message: 'Service not found.',
+        });
+    }
+
     const appointmentData = {
-        vendorid: req.body.vendorid,
-        customerid: req.body.customerid,
+        appointmentDateTime: req.body.appointmentDateTime,
+        appointmentStatus: req.body.appointmentStatus,
+        customerprofileid: req.body.customerprofileid,
+        vendorprofileid: req.body.vendorprofileid,
         serviceid: req.body.serviceid,
         queueid: req.body.queueid,
-        date: req.body.date,
-        time: req.body.time
     };
 
     try {
         const appointment = await AppointmentService.createAppointment(appointmentData);
+        if (!appointment) {
+            return res.status(500).json({
+                message: 'Failed to create appointment',
+            });
+        }
+
+
+        // Check if the queue exists
+        const queue = await QueueService.getQueueById(req.body.queueid);
+
+        if (!queue) {
+            return res.status(404).json({
+                message: 'Queue not found.',
+            });
+        }
+
+
+
+        // // Check if the queue is active
+        // if (queue.queueStatus !== 'active') {
+        //     return res.status(400).json({
+        //         message: 'Queue is not active.',
+        //     });
+        // }
+
+        // Check if the queue is full
+
+        const averageTime = queue.averageServiceTime * queue.currentQueueSize + queue.averageServiceTime + 5;
+        //Check if average time exceeds the queue end time
+        if (queue.queueEndTime < averageTime) {
+            return res.status(400).json({
+                message: 'Queue is full.',
+            });
+        }
+
+
+        // Now Update the queue with the new queue size and the new average service time
+        const newQueueSize = queue.currentQueueSize + 1;
+        const newAverageServiceTime = (queue.averageServiceTime * queue.currentQueueSize + queue.averageServiceTime) / newQueueSize;
+        const updatedQueue = await QueueService.updateQueue(req.body.queueid, {
+            currentQueueSize: newQueueSize,
+            averageServiceTime: newAverageServiceTime,
+        });
+
+        if (!updatedQueue) {
+            return res.status(500).json({
+                message: 'Failed to update queue.',
+            });
+        }
+
+
         return res.status(201).json(appointment);
     } catch (error) {
         console.error('Failed to create appointment:', error);
@@ -47,4 +140,4 @@ const createAppointment = async (req, res) => {
     }
 }
 
-module.exports = createAppointment;
+module.exports = { createAppointment };

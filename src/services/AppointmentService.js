@@ -1,4 +1,4 @@
-import db from '../models/index.js';
+const db =  require('../models/index.js');
 
 const AppointmentModel = db.AppointmentModel;
 
@@ -25,26 +25,28 @@ const createAppointment = async (appointment) => {
  */
 const getAppointmentById = async (appointmentId) => {
     try {
-        return await AppointmentModel.findByPk(appointmentId,{
-            include: [
-                {
-                    model: db.VendorProfileModel,
-                    as: 'vendor'
-                },
-                {
-                    model: db.CustomerProfileModel,
-                    as: 'customer'
-                },
-                {
-                    model: db.ServiceModel,
-                    as: 'service'
-                },{
-                    model: db.QueueModel,
-                    as: 'queue'
-                }
-            ]
+        return await AppointmentModel.findByPk(appointmentId,
+            // {
+            // include: [
+            //     {
+            //         model: db.VendorProfileModel,
+            //         as: 'vendor'
+            //     },
+            //     {
+            //         model: db.CustomerProfileModel,
+            //         as: 'customer'
+            //     },
+            //     {
+            //         model: db.ServiceModel,
+            //         as: 'service'
+            //     },{
+            //         model: db.QueueModel,
+            //         as: 'queue'
+            //     }
+            // ]
         
-        });
+        // }
+    );
     } catch (error) {
         console.error("Error fetching appointment:", error);
         throw new Error("Failed to fetch appointment.");
@@ -260,7 +262,7 @@ const getAppointmentsByServiceId = async (serviceId) => {
     }
 }
 
-export {
+module.exports = {
     createAppointment,
     getAppointmentById,
     updateAppointment,
@@ -269,5 +271,4 @@ export {
     getAppointmentsByCustomerId,
     getAppointmentsByQueueId,
     getAppointmentsByServiceId
-    
 };
