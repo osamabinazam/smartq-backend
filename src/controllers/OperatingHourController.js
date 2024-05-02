@@ -13,11 +13,6 @@ const createOperatingHours = async (req, res) => {
         return res.status(400).json({ error: "OperatingHours details cannot be empty" });
     }
 
-    // Check if the request body has all the required fields
-    if (!req.body.weekday || !req.body.opentime || !req.body.closetime || !req.body.isclosed) {
-        return res.status(400).json({ error: "profileId, day, openTime and closeTime are required" });
-    }
-
     // Check if the profile exists
     const profile = await ProfileService.getVendorProfileByUserId(req.user.userid);
     if (!profile) {

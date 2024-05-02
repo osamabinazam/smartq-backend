@@ -144,6 +144,17 @@ const getVendorProfileByUserId = async (userId) => {
     }
 }
 
+const getCustomerProfileByUserId = async (userId) => {
+    try {
+        return await CustomerProfileModel.findOne({ where: { userid: userId }, include: 'user'});
+    }
+    catch (error) {
+        console.error("Error fetching customer profile:", error);
+        throw new Error("Failed to fetch customer profile.");
+    }
+}
+
+
 /********************************************************************************************
  * ************ Export Profile Services ******************************************************
  * ******************************************************************************************
@@ -160,5 +171,6 @@ module.exports = {
     getCustomerProfileById,
     updateCustomerProfile,
     deleteCustomerProfile,
-    getAllCustomerProfiles
+    getAllCustomerProfiles,
+    getCustomerProfileByUserId
 };

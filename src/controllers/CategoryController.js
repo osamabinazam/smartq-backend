@@ -23,12 +23,12 @@ const createCategory = async (req, res) => {
 
     const categoryData = {
         categoryname: req.body.categoryname,
-        // description: req.body.description,
     };
 
     try {
-
-        console.log("Category Data: ", categoryData)
+        if (req.body.parentcategoryid) {
+            categoryData.parentcategoryid = req.body.parentcategoryid;
+        }
 
         const category = await CategoryService.createCategory(categoryData);
         return res.status(201).json(category);

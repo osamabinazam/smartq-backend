@@ -41,6 +41,7 @@ const createService = async (req, res) => {
         name: req.body.name,
         description: req.body.description,
         price: req.body.price,
+        categoryid: req.body.categoryid,
       
     };
 
