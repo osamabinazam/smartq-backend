@@ -12,6 +12,9 @@ const LocationRoutes = require("../routes/LocationRoutes.js");
 const CategoryRoutes = require("../routes/CategoryRoutes.js");
 const ContactRoutes = require("../routes/ContactRoutes.js");
 const ProvideServiceRoutes = require("../routes/ProvideServiceRoutes.js")
+const QueueRoutes = require("../routes/QueueRoutes.js");
+const AppointmentRoutes = require("../routes/AppointmentRoutes.js");
+
 const fs = require("fs");
 dotenv.config();
 
@@ -47,6 +50,8 @@ app.use('/api/location', LocationRoutes);
 app.use('/api/category', CategoryRoutes);
 app.use('/api/contact', ContactRoutes);
 app.use('/api/service', ProvideServiceRoutes);
+app.use('/api/queue', QueueRoutes);
+app.use('/api/appointment', AppointmentRoutes);
 
 
 
