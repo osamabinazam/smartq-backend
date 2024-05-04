@@ -435,6 +435,34 @@ const deleteCustomerProfile = async (req, res) => {
 }
 
 
+/**
+ * Get All nearby Vendors
+ * 
+ */
+const getAllNearbyVendors = async (req, res) => {
+
+    if (!req.query) {
+        return res.status(400).send({
+            message: "Data to update can not be empty!"
+        });
+    }
+
+    const { latitude, longitude, radius } = req.query; 
+
+    if (!latitude || !longitude || !radius) {
+        return res.status(400).json({ message: "Missing required query parameters: latitude, longitude, radius." });
+    }
+
+
+    try {
+        const vendors = await ProfileService.getAllNearbyVendors(parseFloat(latitude), parseFloat(longitude), parseFloat(radius));
+        res.status(200).send(vendors);
+    } catch (error) {
+        console.error("Error fetching nearby vendors:", error);
+        return res.status(500).send({ message: 'Failed to fetch nearby vendors.' });
+    }
+
+}
 
 /**
  * Export controller functions as a module 
@@ -452,5 +480,6 @@ module.exports = {
     updateVendorProfile,
     updateCustomerProfile,
     deleteVendorProfile,
-    deleteCustomerProfile
+    deleteCustomerProfile,
+    getAllNearbyVendors
 };

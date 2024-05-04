@@ -68,6 +68,14 @@ const createAppointment = async (req, res) => {
         });
     }
 
+    // Check the existence of appointment
+    const appointmentExists = await AppointmentService.checkAppoitment(req.body.vendorprofileid, req.body.customerprofileid, req.body.serviceid, req.body.queueid);
+    if (appointmentExists) {
+        return res.status(400).json({
+            message: 'Appointment already exists.',
+        });
+    }
+
     const appointmentData = {
         appointmentDateTime: req.body.appointmentDateTime,
         appointmentStatus: req.body.appointmentStatus,
@@ -140,4 +148,59 @@ const createAppointment = async (req, res) => {
     }
 }
 
-module.exports = { createAppointment };
+
+/**
+ * Get Upcoming Appointments
+ * @param {object} req
+ * @param {object} res
+ * @returns {object} appointments
+ */
+const getUpcomingAppointments = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({
+            message: 'Unauthorized. Please log in to view appointments.',
+        });
+    }
+
+    if (!req.body){
+        return res.status(400).json({
+            message: 'No appointment data found in the request.',
+        });
+    }
+
+    // Get queue id from request params
+    const queueId = req.body.queueid;
+    console.log(req.body)
+
+    // if (req.user.usertype !== 'customer') {
+    //     return res.status(403).json({
+    //         message: 'Forbidden. Only customers can view appointments.',
+    //     });
+    // }
+
+
+
+    try {
+        // get scheduled appointments using queue id
+        const appointmentsData = await AppointmentService.getUpcomingAppointments(queueId);
+
+
+        if (!appointmentsData) {
+            return res.status(404).json({
+                message: 'No upcoming appointments found.',
+            });
+        }
+
+        return res.status(200).json(appointmentsData);
+    } catch (error) {
+        console.error('Failed to fetch upcoming appointments:', error);
+        return res.status(500).json({
+            message: 'Failed to fetch upcoming appointments.',
+            error: error.message,
+        });
+    }
+}
+
+module.exports = { 
+    createAppointment,
+    getUpcomingAppointments,};

@@ -6,6 +6,8 @@ const router = express.Router();
 
 // Queue Routes
 router.post('/create', authenticateToken, authorizeRoles('vendor'), QueueController.createQueue);
+// router.get('/', authenticateToken, authorizeRoles('vendor'), QueueController.getFutureQueues);
+router.get('/', authenticateToken, authorizeRoles('vendor'), QueueController.getQueueByVendorId);
 
 
 module.exports = router;

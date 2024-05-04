@@ -19,6 +19,15 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.passw
      sequelize.authenticate();
     console.log('Connection has been established successfully.');
 
+
+    // Ensure PostGIS is set up
+     sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis;').then(() => {
+        console.log('PostGIS extension enabled.');
+      }).catch((error) => {
+        console.error('Unable to enable PostGIS extension:', error);
+      });
+    console.log('PostGIS extension enabled.');
+
     const modelFiles = fs.readdirSync(__dirname)
       .filter(file => file.indexOf('.') !== 0 && file.slice(-3) === '.js'); // Get all model files
 
@@ -31,15 +40,12 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.passw
       }
     }
     setupAssociations(db); // Setup model associations
-     sequelize.sync({ force: false, alter: true }); // Sync all models with the database
+     sequelize.sync({ force: true, alter: true }); // Sync all models with the database
     console.log('All models were synchronized successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
 
-// }
-
-// initializeDatabase();
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

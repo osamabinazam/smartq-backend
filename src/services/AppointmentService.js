@@ -25,28 +25,7 @@ const createAppointment = async (appointment) => {
  */
 const getAppointmentById = async (appointmentId) => {
     try {
-        return await AppointmentModel.findByPk(appointmentId,
-            // {
-            // include: [
-            //     {
-            //         model: db.VendorProfileModel,
-            //         as: 'vendor'
-            //     },
-            //     {
-            //         model: db.CustomerProfileModel,
-            //         as: 'customer'
-            //     },
-            //     {
-            //         model: db.ServiceModel,
-            //         as: 'service'
-            //     },{
-            //         model: db.QueueModel,
-            //         as: 'queue'
-            //     }
-            // ]
-        
-        // }
-    );
+        return await AppointmentModel.findByPk(appointmentId,);
     } catch (error) {
         console.error("Error fetching appointment:", error);
         throw new Error("Failed to fetch appointment.");
@@ -62,25 +41,7 @@ const getAppointmentById = async (appointmentId) => {
  */
 const updateAppointment = async (appointmentId, appointmentDetails) => {
     try {
-        const [updatedRows] = await AppointmentModel.update(appointmentDetails, { where: { appointmentid: appointmentId } },{
-            include: [
-                {
-                    model: db.VendorProfileModel,
-                    as: 'vendor'
-                },
-                {
-                    model: db.CustomerProfileModel,
-                    as: 'customer'
-                },
-                {
-                    model: db.ServiceModel,
-                    as: 'service'
-                },{
-                    model: db.QueueModel,
-                    as: 'queue'
-                }
-            ]
-        });
+        const [updatedRows] = await AppointmentModel.update(appointmentDetails, { where: { appointmentid: appointmentId } });
         if (updatedRows === 0) {
             throw new Error("Appointment not found or nothing to update.");
         }
@@ -100,26 +61,7 @@ const updateAppointment = async (appointmentId, appointmentDetails) => {
  */
 const deleteAppointment = async (appointmentId) => {
     try {
-        return await AppointmentModel.destroy({ where: { appointmentid: appointmentId } }, {
-            include: [
-                {
-                    model: db.VendorProfileModel,
-                    as: 'vendor'
-                },
-                {
-                    model: db.CustomerProfileModel,
-                    as: 'customer'
-                },
-                {
-                    model: db.ServiceModel,
-                    as: 'service'
-                },{
-                    model: db.QueueModel,
-                    as: 'queue'
-                }
-            ]
-        
-        });
+        return await AppointmentModel.destroy({ where: { appointmentid: appointmentId } });
     } catch (error) {
         console.error("Error deleting appointment:", error);
         throw new Error("Failed to delete appointment.");
@@ -134,26 +76,7 @@ const deleteAppointment = async (appointmentId) => {
  */
 const getAppointmentsByVendorId = async (vendorId) => {
     try {
-        return await AppointmentModel.findAll({ where: { vendorid: vendorId } },
-            {
-                include: [
-                    {
-                        model: db.VendorProfileModel,
-                        as: 'vendor'
-                    },
-                    {
-                        model: db.CustomerProfileModel,
-                        as: 'customer'
-                    },
-                    {
-                        model: db.ServiceModel,
-                        as: 'service'
-                    },{
-                        model: db.QueueModel,
-                        as: 'queue'
-                    }
-                ]
-            });
+        return await AppointmentModel.findAll({ where: { vendorid: vendorId } });
     } catch (error) {
         console.error("Error fetching appointment:", error);
         throw new Error("Failed to fetch appointment.");
@@ -168,26 +91,7 @@ const getAppointmentsByVendorId = async (vendorId) => {
  */
 const getAppointmentsByCustomerId = async (customerId) => {
     try {
-        return await AppointmentModel.findAll({ where: { customerid: customerId } },
-            {
-                include: [
-                    {
-                        model: db.VendorProfileModel,
-                        as: 'vendor'
-                    },
-                    {
-                        model: db.CustomerProfileModel,
-                        as: 'customer'
-                    },
-                    {
-                        model: db.ServiceModel,
-                        as: 'service'
-                    },{
-                        model: db.QueueModel,
-                        as: 'queue'
-                    }
-                ]
-            });
+        return await AppointmentModel.findAll({ where: { customerid: customerId } });
     } catch (error) {
         console.error("Error fetching appointment:", error);
         throw new Error("Failed to fetch appointment.");
@@ -202,26 +106,7 @@ const getAppointmentsByCustomerId = async (customerId) => {
  */
 const getAppointmentsByQueueId = async (queueId) => {
     try {
-        return await AppointmentModel.findAll({ where: { queueid: queueId } },
-            {
-                include: [
-                    {
-                        model: db.VendorProfileModel,
-                        as: 'vendor'
-                    },
-                    {
-                        model: db.CustomerProfileModel,
-                        as: 'customer'
-                    },
-                    {
-                        model: db.ServiceModel,
-                        as: 'service'
-                    },{
-                        model: db.QueueModel,
-                        as: 'queue'
-                    }
-                ]
-            });
+        return await AppointmentModel.findAll({ where: { queueid: queueId } });
     } catch (error) {
         console.error("Error fetching appointment:", error);
         throw new Error("Failed to fetch appointment.");
@@ -236,31 +121,98 @@ const getAppointmentsByQueueId = async (queueId) => {
  */
 const getAppointmentsByServiceId = async (serviceId) => {
     try {
-        return await AppointmentModel.findAll({ where: { serviceid: serviceId } },
-            {
-                include: [
-                    {
-                        model: db.VendorProfileModel,
-                        as: 'vendor'
-                    },
-                    {
-                        model: db.CustomerProfileModel,
-                        as: 'customer'
-                    },
-                    {
-                        model: db.ServiceModel,
-                        as: 'service'
-                    },{
-                        model: db.QueueModel,
-                        as: 'queue'
-                    }
-                ]
-            });
+        return await AppointmentModel.findAll({ where: { serviceid: serviceId, appointmentStatus:"scheduled" } });
     } catch (error) {
         console.error("Error fetching appointment:", error);
         throw new Error("Failed to fetch appointment.");
     }
 }
+
+
+
+const checkAppoitment = async (vendorid, customerid, serviceid, queueid ) => {
+    try {
+        return await AppointmentModel.findOne({ where: { vendorprofileid: vendorid, customerprofileid: customerid, serviceid: serviceid, queueid: queueid}});
+    }
+    catch (error) {
+        console.error("Error fetching appointment:", error);
+        throw new Error("Failed to fetch appointment.");
+    }
+}
+
+const getUpcomingAppointments = async (queueId) => {
+    try {
+        return await AppointmentModel.findAll({ where: { queueid: queueId },
+            order: [['appointmentDateTime', 'ASC']],
+            limit: 5,
+            include: ['customer_profile']
+            
+        });
+    } catch (error) {
+        console.error("Error fetching appointment:", error);
+        throw new Error("Failed to fetch appointment.");
+    }
+}
+
+
+
+
+/************************************************** Working on customer feed ******************************************************* */
+
+/**
+ * Get the number of appointments in the queue
+ */
+const getNumberOfAppointmentsInQueue = async (queueId) => {
+    try {
+        return await AppointmentModel.count({ where: { queueid: queueId } });
+    } catch (error) {
+        console.error("Error fetching appointment:", error);
+        throw new Error("Failed to fetch appointment.");
+    }
+}
+
+
+/**
+ * Get the number of appointments in the queue which are scheduled, completed, cancelled or rescheduled
+ * @param {number} queueId - Queue ID
+ */
+const getNumberOfAppointmentsInQueueByStatus = async (queueId, status) => {
+    try {
+        return await AppointmentModel.count({ where: { queueid: queueId, appointmentStatus: status } });
+    } catch (error) {
+        console.error("Error fetching appointment:", error);
+        throw new Error("Failed to fetch appointment.");
+    }
+}
+
+
+
+
+/**
+ * Calculate Customer Position in the Queue
+ */
+const getCustomerAppointmentPosition = async (queueid,appointmentId) => {
+    try {
+        // Fetch all appointments sorted by date and time
+        const appointments = await AppointmentModel.findAll({
+            where: { queueid: queueid },
+            order: [['appointmentDateTime', 'ASC']],
+            attributes: ['appointmentid', 'appointmentDateTime']
+        });
+
+        // Find the index of the appointment with the given appointmentId
+        const position = appointments.findIndex(appointment => appointment.appointmentid === appointmentId);
+
+        // Return the position + 1 to represent the customer's turn (1-based index)
+        return position === -1 ? null : position + 1;
+    } catch (error) {
+        console.error("Error calculating customer's appointment position:", error);
+        throw new Error("Failed to calculate appointment position.");
+    }
+}
+
+
+
 
 module.exports = {
     createAppointment,
@@ -270,5 +222,9 @@ module.exports = {
     getAppointmentsByVendorId,
     getAppointmentsByCustomerId,
     getAppointmentsByQueueId,
-    getAppointmentsByServiceId
+    getAppointmentsByServiceId,
+    checkAppoitment,
+    getUpcomingAppointments,
+    getNumberOfAppointmentsInQueue,
+    getNumberOfAppointmentsInQueueByStatus,
 };

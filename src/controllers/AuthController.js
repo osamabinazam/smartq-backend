@@ -73,7 +73,7 @@ const register = async (req, res) => {
         email: req.body.email,
         password: hashPassword,
         gender: req.body.gender,
-        usertype: req.body.usertype,
+        usertype: req.body.userType,
     }
 
 

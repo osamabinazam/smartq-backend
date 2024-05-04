@@ -7,5 +7,6 @@ const router = express.Router();
 
 // Appointment Routes
 router.post('/create', authenticateToken, authorizeRoles('customer'), AppointmentController.createAppointment);
+router.post('/upcoming', authenticateToken, authorizeRoles('vendor', 'customer'), AppointmentController.getUpcomingAppointments);
 
 module.exports = router;

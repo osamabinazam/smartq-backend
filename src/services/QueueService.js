@@ -1,4 +1,5 @@
 const db = require('../models/index.js');
+const AppointmentService = require('./AppointmentService.js');
 
 const QueueModel = db.QueueModel;
 
@@ -46,6 +47,23 @@ const updateQueue = async (queueId, queueDetails) => {
     }
 }
 
+/**
+ * Update queue status
+ */
+const updateQueueStatus = async (queueId, status) => {
+    try {
+        const [updatedRows] = await QueueModel.update({ status: status }, { where: { queueID: queueId } });
+        if (updatedRows === 0) {
+            throw new Error("Queue not found or nothing to update.");
+        }
+        return updatedRows;
+    } catch (error) {
+        console.error("Error updating queue status:", error);
+        throw error; // Re-throw the error for the caller to handle
+    }
+}
+
+
 
 
 /**
@@ -72,14 +90,21 @@ const deleteQueue = async (queueId) => {
  */
 const getQueueByVendorId = async (vendorId) => {
     try {
-        return await QueueModel.findOne({
-            where: { vendorid: vendorId },
+
+
+        const queueData = await QueueModel.findOne({
+            where: { vendorprofileid: vendorId, queueStatus:'active'}, 
             order: [['createdAt', 'DESC']],
-            include: [
-                { model: db.AppointmentModel },
-                { model: db.ServiceModel }
-            ]
+            include: ['appointments', 'services']
         });
+
+
+        const noOfRemaingAppointments = await AppointmentService.getNumberOfAppointmentsInQueueByStatus(queueData.queueID, 'scheduled');
+        console.log(noOfRemaingAppointments)
+
+        queueData.dataValues['remaing'] = await noOfRemaingAppointments;
+
+        return queueData;
     } catch (error) {
         console.error("Error fetching queue:", error);
         throw new Error("Failed to fetch queue.");
@@ -96,10 +121,11 @@ const getQueuesByVendorProfile = async (vendorProfile) => {
     try {
         return await QueueModel.findAll({
             where: { vendorprofile: vendorProfile },
+
             order: [['createdAt', 'DESC']],
             include: [
-                { model: db.AppointmentModel },
-                { model: db.ServiceModel }
+                'appointments',
+                'services'
             ]
         });
     } catch (error) {
@@ -120,8 +146,8 @@ const getQueueByTimeRange = async (startTime, endTime) => {
             where: { starttime: startTime, endtime: endTime },
             order: [['createdAt', 'DESC']],
             include: [
-                { model: db.AppointmentModel },
-                { model: db.ServiceModel }
+                'appointments',
+                'services'
             ]
         });
     } catch (error) {
@@ -158,4 +184,6 @@ module.exports = {
     getQueueByVendorId,
     getQueuesByQueueStatus,
     getQueuesByVendorProfile,
+    getQueueByTimeRange,
+    updateQueueStatus
 };

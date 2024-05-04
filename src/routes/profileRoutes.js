@@ -12,6 +12,7 @@ router.get('/vendor', authenticateToken, authorizeRoles('vendor', 'customer'), P
 router.get('/vendor/:id', authenticateToken, authorizeRoles('vendor', 'customer'), ProfileController.getVendorProfileById);
 router.put('/vendor/:id', authenticateToken, authorizeRoles('vendor'), ProfileController.updateVendorProfile);
 router.delete('/vendor/:id', authenticateToken, authorizeRoles('vendor'), ProfileController.deleteVendorProfile);
+router.get('/vendor/nearby', authenticateToken, authorizeRoles('vendor', 'customer'), ProfileController.getAllNearbyVendors);
 
 // Vendor's Education Routes
 router.post('/vendor/:id/education', authenticateToken, authorizeRoles('vendor'), EducationController.createEducation);

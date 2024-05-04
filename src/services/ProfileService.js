@@ -60,13 +60,37 @@ const deleteVendorProfile = async (vendorProfileId) => {
 const getAllVendorProfiles = async () => {
     try {
         return await VendorProfileModel.findAll({
-            include: ['services', 'educations', 'operating_hours']
+            include: ['services', 'educations', 'operating_hours', 'social_media', 'business_locations']
         });
     } catch (error) {
         console.error("Error fetching vendor profiles:", error);
         throw new Error("Failed to fetch vendor profiles.");
     }
 }
+
+const getAllNearbyVendors = async (latitude, longitude, radius) => {
+    try {
+        return await VendorProfileModel.findAll({
+            include: [{
+                model: LocationModel,
+                as: 'Locations', // assuming 'Locations' is the alias in the association
+                where: db.sequelize.where(
+                    db.sequelize.fn(
+                        'ST_DWithin',
+                        db.sequelize.col('geolocation'), // Assuming 'geolocation' is the actual geographic column
+                        db.sequelize.fn('ST_MakePoint', longitude, latitude),
+                        radius
+                    ),
+                    true
+                )
+            }]
+        });
+    } catch (error) {
+        console.error("Error fetching nearby vendors:", error);
+        throw new Error("Failed to fetch nearby vendors.");
+    }
+}
+
 
 
 
@@ -125,10 +149,29 @@ const deleteCustomerProfile = async (customerProfileId) => {
 
 const getAllCustomerProfiles = async () => {
     try {
-        return await CustomerProfileModel.findAll( {
-            include: 'user'
+        // return await CustomerProfileModel.findAll( {
+        //     include:[ 'user', 'appointments']
         
-        } );
+        // } );
+        return await CustomerProfileModel.findAll({
+            attributes: { 
+                exclude: ['userid','createdAt', 'updatedAt'] // Add attributes you want to exclude
+            },
+            include: [
+                {
+                    association: 'user',
+                    attributes: { 
+                        exclude: ['password', 'createdAt', 'updatedAt'] // Exclude sensitive and unnecessary attributes
+                    }
+                },
+                {
+                    association: 'appointments',
+                    attributes: {
+                        exclude: ['createdAt', 'updatedAt'] // Exclude if not needed
+                    }
+                }
+            ]
+        });
     } catch (error) {
         console.error("Error fetching customer profiles:", error);
         throw new Error("Failed to fetch customer profiles.");
@@ -137,7 +180,7 @@ const getAllCustomerProfiles = async () => {
 
 const getVendorProfileByUserId = async (userId) => {
     try {
-        return await VendorProfileModel.findOne({ where: { userid: userId }, include: ['services', 'educations', 'operating_hours']});
+        return await VendorProfileModel.findOne({ where: { userid: userId }, include: ['services', 'educations', 'operating_hours','social_media', 'business_locations']});
     } catch (error) {
         console.error("Error fetching vendor profile:", error);
         throw new Error("Failed to fetch vendor profile.");
@@ -146,13 +189,16 @@ const getVendorProfileByUserId = async (userId) => {
 
 const getCustomerProfileByUserId = async (userId) => {
     try {
-        return await CustomerProfileModel.findOne({ where: { userid: userId }, include: 'user'});
+        return await CustomerProfileModel.findOne({ 
+            where: { userid: userId }, 
+            include: ['user', 'appointments']});
     }
     catch (error) {
         console.error("Error fetching customer profile:", error);
         throw new Error("Failed to fetch customer profile.");
     }
 }
+
 
 
 /********************************************************************************************
@@ -172,5 +218,6 @@ module.exports = {
     updateCustomerProfile,
     deleteCustomerProfile,
     getAllCustomerProfiles,
-    getCustomerProfileByUserId
+    getCustomerProfileByUserId,
+    getAllNearbyVendors
 };

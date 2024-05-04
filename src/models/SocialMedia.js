@@ -21,7 +21,10 @@ const SocialMediaModel = (sequelize) => {
   SocialMedia.init({
     socialmediaid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
     link: { type: DataTypes.TEXT },
-    platform: { type: DataTypes.STRING(255) }
+    platform: { 
+      type: DataTypes.ENUM('facebook', 'twitter', 'instagram', 'linkedIn', 'pinterest', 'youtube'),
+      allowNull: false
+    }
   }, {
     sequelize,
     modelName: 'SocialMedia',
