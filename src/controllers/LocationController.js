@@ -63,6 +63,7 @@ const createLocation = async (req, res) => {
         postalcode: req.body.postalcode,
         longitude: req.body.longitude,
         latitude: req.body.latitude,
+        geolocation: { type: 'Point', coordinates: [req.body.longitude, req.body.latitude] },
         vendorprofileid: vendorProfile.vendorprofileid
     };    
     
@@ -81,6 +82,27 @@ const createLocation = async (req, res) => {
         });
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /**

@@ -27,7 +27,10 @@ const LocationModel = (sequelize) => {
     state: { type: DataTypes.STRING(255) },
     postalcode: { type: DataTypes.STRING(20) },
     longitude: { type: DataTypes.FLOAT },
-    latitude: { type: DataTypes.FLOAT }
+    latitude: { type: DataTypes.FLOAT },
+    geolocation: {
+      type: DataTypes.GEOGRAPHY('POINT', 4326)
+    }
   }, {
     sequelize,
     modelName: 'Location',

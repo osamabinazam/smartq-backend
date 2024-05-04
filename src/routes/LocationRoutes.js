@@ -5,7 +5,7 @@ const express = require("express");
 const router = express.Router();
 
 // Location Routes
-router.post("/location", authenticateToken, authorizeRoles("vendor"), LocationController.createLocation);
+router.post("/create", authenticateToken, authorizeRoles("vendor"), LocationController.createLocation);
 router.get("/location", authenticateToken, authorizeRoles("vendor", "customer"), LocationController.getAllLocations);
 router.get("/location/:id", authenticateToken, authorizeRoles("vendor", "customer"), LocationController.getLocationById);
 router.put("/location/:id", authenticateToken, authorizeRoles("vendor"), LocationController.updateLocation);
