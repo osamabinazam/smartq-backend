@@ -1,4 +1,5 @@
 require('dotenv').config();
+const Sequelize = require('sequelize');
 
 /**
  * Database configuration object
@@ -27,11 +28,20 @@ const dbConfig = {
         }
     },
     pool: {
-        max: 5,
+        max: 10,
         min: 1, 
         acquire: 30000,
         idle:  10000
-    }
+    },
+    retry: {
+        match: [
+          Sequelize.ConnectionError,
+          Sequelize.ConnectionRefusedError,
+          Sequelize.ConnectionTimedOutError,
+          'ECONNRESET'
+        ],
+        max: 5
+        }
 };
 
 /**
