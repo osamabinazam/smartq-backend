@@ -22,9 +22,10 @@ const OTPModel = (sequelize) => {
      * @param {Object} fields - The fields to define the OTP model.
      */
     OTP.init({
-      
-      email: { type: DataTypes.STRING(100), allowNull: false, unique: true },
+      otpid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+      email: { type: DataTypes.STRING(100), allowNull: false, unique: false },
       otp: { type: DataTypes.STRING(6), allowNull: false },
+      isUsed: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
       expiresAt: { type: DataTypes.DATE, allowNull: false }
     }, {
         
@@ -37,4 +38,8 @@ const OTPModel = (sequelize) => {
         // Return the OTP model
         return OTP;
 }
+/**
+ * Exports the Queue model function.
+ */
+module.exports = OTPModel;
 
