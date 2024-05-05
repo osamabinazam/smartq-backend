@@ -1,41 +1,46 @@
 const nodemailer = require('nodemailer');
-const {generateOTP}  = require('./otpGenerate');
+const { google } = require('googleapis');
+
 require('dotenv').config();
 
-// Create transporter with nodemailer
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.ethereal.email',
-    port: process.env.SMTP_PORT || 587,
-    auth: {
-        user: process.env.SMTP_AUTH_USER || 'beau.jones69@ethereal.email',
-        pass: process.env.SMTP_AUTH_PASSWORD ||'bFJc6WhR8eVdmBgmNg'
-    },
-    connectionTimeout: 60000,
-    greetingTimeout: 30000,
-    socketTimeout: 30000,
-});
+const CLIENT_ID = "971387716508-fsni3ojk0a854rbegupbbieeaidpbr9q.apps.googleusercontent.com";
+const CLIENT_SECRET = "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";
+const REDIRECT_URI = "https://developers.google.com/oauthplayground";
+const REFRESH_TOKEN = "1//04y84gb0zmrtVCgYIARAAGAQSNwF-L9IrGGOeR2zY4QZDN1EfWgUtnoxWglUR77UrpWykHDJGvn5KqtKgf_gejwx3mFUl3P9eLqM";
 
-// Function to send OTP email
- function sendEmailWithOTP(email) {
-    const otp = generateOTP();
-    const mailOptions = {
-        from: process.env.FROM_EMAIL || 'osama.bscssef20@iba-suk.edu.pk',
-        to: email,
-        subject: 'Your One-Time Password (OTP)',
-        text: `Your OTP is: ${otp}. It is valid for the next 10 minutes.`,
-    };
+const oAuth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
-    return new Promise((resolve, reject) => {
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.error('Failed to send OTP email:', error);
-                reject(error);
-            } else {
-                console.log('OTP email sent:', info.response);
-                resolve({otp, info});
+async function sendEmailWithOTP(name, to, subject, text, html) {
+    try {
+        const accessToken = await oAuth2Client.getAccessToken();  // Ensure this call is awaited
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                type: 'OAuth2',
+                user: "smartqofficial.help@gmail.com",
+                clientId: CLIENT_ID,          // Correct case
+                clientSecret: CLIENT_SECRET,  // Correct case
+                refreshToken: REFRESH_TOKEN,  // Correct case
+                accessToken: accessToken.token  // Pass accessToken dynamically
             }
         });
-    });
+
+        const mailOptions = {
+            from: `${name} <smartqofficial.help@gmail.com>`,
+            to: to,
+            subject: subject,
+            text: text,
+            html: html,
+        };
+
+        const info = await transporter.sendMail(mailOptions);
+        return info;
+    } catch (error) {
+        console.error('Failed to send OTP email:', error);
+        throw error;  // Rethrow the error to handle it outside this function if necessary
+    }
 }
 
 module.exports = {
