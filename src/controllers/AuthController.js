@@ -4,6 +4,7 @@ const jwtTokens = require('../utils/jwt-helper.js');
 const ImageService = require("../services/ImageService.js");
 const ProfileService = require("../services/ProfileService.js");
 const {sendEmailWithOTP} = require('../utils/emailTransporter.js');
+const {generateOTP} = require('../utils/otpGenerate.js');
 const OPTService = require('../services/OTPService.js');
 const db = require('../models/index.js')
 
@@ -136,17 +137,21 @@ const forgotPassword = async (req, res) => {
             return res.status(404).send("User not found.");
         }
 
-        console.log("Generating OTP for email:", email)
+        const generatedOTP = generateOTP();
 
-        const {otp, info } = await sendEmailWithOTP(email);
-        console.log("OTP:", otp, "\nInfo:", info);
+
+
+        // send OTP to the user's email
+        const info = await sendEmailWithOTP("Support SmartQ", email, "Password Reset OTP", `Your OTP is ${generatedOTP}`, `<p>Your OTP is <b>${generatedOTP}</b></p>`);
+       console.log(info)
 
         
         // create OTP record in the database
         const optData = {
             email: email,
-            otp: otp,
-            expireTime:new Date(Date.now() + 600000),
+            otp: generatedOTP,
+            isUsed: false,
+            expiresAt: new Date(Date.now() + 600000), // Correct field name
         };
 
         // create OTP record in the database
@@ -161,11 +166,11 @@ const forgotPassword = async (req, res) => {
     }
 }
 
-
 /**
- * Varify the OPT
- * @param {*} req
- * @param {*} res
+ *  Verify OTP sent to user's email
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
  */
 const verifyOTP = async (req, res) => {
     const { email, otp } = req.body;
@@ -175,14 +180,23 @@ const verifyOTP = async (req, res) => {
     }
 
     try {
-        const otpRecord = await OPTService.getOTPByEmailAndExpireTime(email, 600000);
+        // Retrieve the OTP record by email
+        const otpRecord = await OPTService.getActiveOTPByEmail(email);
+
         if (!otpRecord) {
-            return res.status(404).send("OTP not found or expired.");
+            return res.status(404).send("OTP not found or has expired.");
         }
+
+        console.log("OTP is : ", otp)
 
         if (otpRecord.otp !== otp) {
             return res.status(401).send("Invalid OTP.");
         }
+
+        console.log(otpRecord)
+
+        // Optionally, invalidate the OTP after successful verification
+        await OPTService.invalidateOTP(otpRecord.otpid);
 
         return res.status(200).send("OTP verified successfully.");
     } catch (error) {
@@ -192,6 +206,7 @@ const verifyOTP = async (req, res) => {
 }
 
 
+
 /**
  * 
  * @param {*} req 
@@ -199,45 +214,56 @@ const verifyOTP = async (req, res) => {
  * @returns 
  */
 const resetPassword = async (req, res) => {
-    console.log(req.body);
-    
-    if (!req.body){
-        return res.status(400).send("Request body is missing")
+
+    if (!req.body) {
+        return res.status(400).send("Request body is missing");
     }
 
-    const hashPassword = await bcrypt.hash(req.body.password, 10);
+    try {
+        const hashPassword = await bcrypt.hash(req.body.password, 10);
+        const email_username = req.body.username ? req.body.username : req.body.email;
 
-    const email_username = req.body.username ? req.body.username : req.body.email;
-
-    User.findOne({
-        where: {
-            [db.Sequelize.Op.or]: [{ username: email_username }, { email: email_username }]
-        }
-    }).then((user) => {
-        if (!user){
-            return res.status(404).send("User not found")
-        }
-
-        User.update({
-            password: hashPassword,
-        }, { where : { userid: user.userid } }
-        ).then((updatedUser) => {
-            if (!updatedUser){
-                return res.status(500).send("Error while updating the user password")
+        // Finding the user by username or email
+        const user = await User.findOne({
+            where: {
+                [db.Sequelize.Op.or]: [{ username: email_username }, { email: email_username }]
             }
-
-            user.password = undefined;
-
-            const tokens = jwtTokens(user.dataValues);
-
-            res.status(200).send({tokens: tokens, user: user.dataValues, message: "Password reset successful"})
-        }).catch((err) => {
-            console.log(err)
-            return res.status(500).send("Error while updating the user password")
         });
-    }).catch((err) => {
-        return res.status(500).send("Error while finding the user")
-    });
+
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+
+        // Updating user password
+        const [updateCount] = await User.update({
+            password: hashPassword,
+        }, {
+            where: {
+                userid: user.userid
+            }
+        });
+
+        if (updateCount === 0) {
+            return res.status(500).send("Error while updating the user password");
+        }
+
+        // Ensure password is not sent back in the response
+        user.password = undefined;
+
+        // Generate tokens for the user
+        const tokens = jwtTokens(user.dataValues);
+        
+        // Sending the response
+        res.status(200).send({
+            tokens: tokens, 
+            user: user.dataValues, 
+            message: "Password reset successful"
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("An error occurred while processing your request.");
+    }
 }
 
 
