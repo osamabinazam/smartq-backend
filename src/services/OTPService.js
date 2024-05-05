@@ -1,16 +1,14 @@
 const db = require('../models/index.js');
-
-const OTPModel = db.OTPModel;
-
+const OTP = db.OTPModel;
 /**
  * Create a new OTP
- * @param {Object} otp - OTP object
+ * @param {Object} otpData - OTP object
  * @returns {Object} - The created OTP object
  * @throws {Error} - Throws error if the operation fails
  */
-const createOTP = async (otp) => {
+const createOTP = async (otpData) => {
     try {
-        return await OTPModel.create(otp);
+        return await OTP.create(otpData);
     } catch (error) {
         console.error("Error creating OTP:", error);
         throw new Error("Failed to create OTP.");
@@ -25,7 +23,7 @@ const createOTP = async (otp) => {
  */
 const getOTPById = async (otpId) => {
     try {
-        return await OTPModel.findByPk(otpId);
+        return await OTP.findByPk(otpId);
     } catch (error) {
         console.error("Error fetching OTP:", error);
         throw new Error("Failed to fetch OTP.");
@@ -33,20 +31,20 @@ const getOTPById = async (otpId) => {
 }
 
 /**
- * Get OTP by email and expire time
+ * Get an active, not expired, and unused OTP by email
  * @param {string} email - Email
- * @param {number} expireTime - Expire time in minutes
  * @returns {Object} - The OTP object
  * @throws {Error} - Throws error if the operation fails
  */
-const getOTPByEmailAndExpireTime = async (email, expireTime) => {
+const getActiveOTPByEmail = async (email) => {
     try {
-        return await OTPModel.findOne({
+        return await OTP.findOne({
             where: {
                 email: email,
-                createdAt: {
-                    [db.Sequelize.Op.gt]: new Date(new Date() - expireTime * 60000)
-                }
+                expiresAt: {
+                    [db.Sequelize.Op.gt]: new Date() // checks if the OTP is not expired
+                },
+                isUsed: false // checks if the OTP has not been used
             }
         });
     } catch (error) {
@@ -55,7 +53,31 @@ const getOTPByEmailAndExpireTime = async (email, expireTime) => {
     }
 }
 
+/**
+ * Invalidate an OTP by setting it as used
+ * @param {number} otpId - OTP ID to invalidate
+ * @returns {Object} - The updated OTP object
+ * @throws {Error} - Throws error if the operation fails
+ */
+const invalidateOTP = async (otpId) => {
+    try {
+        const otp = await OTP.findByPk(otpId);
+        if (!otp) {
+            throw new Error("OTP not found.");
+        }
+        return await otp.update({ isUsed: true });
+    } catch (error) {
+        console.error("Error invalidating OTP:", error);
+        throw new Error("Failed to invalidate OTP.");
+    }
+}
 
-
-
-
+/**
+ * Exporting the OTPService object
+ */
+module.exports = {
+    createOTP,
+    getOTPById,
+    getActiveOTPByEmail,
+    invalidateOTP,
+};
