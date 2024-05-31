@@ -55,8 +55,46 @@ const createService = async (req, res) => {
 }
 
 /**
+ * Get all services based on userid
+ */
+const getVendorServices = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ error: "Unauthorized. Please log in to view services." });
+    }
+
+    try {
+        // Find related Vendor profile first
+        const vendorProfile = await ProfileService.getVendorProfileByUserId(req.user.userid);
+
+        if (!vendorProfile) {
+            return res.status(404).json({ error: "Vendor profile not found." });
+        }
+
+        // Check if vendor services exist
+        if (!vendorProfile.services || !vendorProfile.services.length) {
+            return res.status(404).json({ error: "No services found for this vendor." });
+        }
+
+        // Extract services data
+        const vendorServices = vendorProfile.services.map(service => service.dataValues);
+
+        return res.status(200).json({
+            services: vendorServices,
+            message: "Services fetched successfully."
+        });
+        
+    } catch (error) {
+        console.error("Error fetching services:", error);
+        return res.status(500).json({ error: "Failed to fetch services." });
+    }
+}
+
+
+
+/**
  * export the createService function
  */
 module.exports = {
-    createService
+    createService,
+    getVendorServices
 };

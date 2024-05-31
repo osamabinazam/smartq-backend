@@ -105,16 +105,26 @@ const createAppointment = async (req, res) => {
 
 
 
-        // // Check if the queue is active
-        // if (queue.queueStatus !== 'active') {
-        //     return res.status(400).json({
-        //         message: 'Queue is not active.',
-        //     });
-        // }
+        // Check if the queue is active
+        if (queue.queueStatus !== 'active') {
+            await QueueService.updateQueue(req.body.queueid, {
+                currentQueueSize: queue.currentQueueSize + 1,
+            }
+            ).then((updatedQueue) => {
+                if (!updatedQueue) {
+                    return res.status(500).json({
+                        message: 'Failed to update queue.',
+                    });
+                }
+
+                return res.status(201).json(appointment);
+
+            }
+            );
+        }
 
         // Check if the queue is full
-
-        const averageTime = queue.averageServiceTime * queue.currentQueueSize + queue.averageServiceTime + 5;
+        const averageTime = parseInt(queue.averageServiceTime * queue.currentQueueSize + queue.averageServiceTime + 5);
         //Check if average time exceeds the queue end time
         if (queue.queueEndTime < averageTime) {
             return res.status(400).json({
@@ -162,15 +172,16 @@ const getUpcomingAppointments = async (req, res) => {
         });
     }
 
-    if (!req.body){
+    if (!req.body) {
         return res.status(400).json({
             message: 'No appointment data found in the request.',
         });
     }
 
     // Get queue id from request params
-    const queueId = req.body.queueid;
-    console.log(req.body)
+    const queueId = req.body.queueId;
+    console.log("Queue ID is : ", req.body)
+    console.log("Quueue id is : ", queueId)
 
     // if (req.user.usertype !== 'customer') {
     //     return res.status(403).json({
@@ -201,6 +212,7 @@ const getUpcomingAppointments = async (req, res) => {
     }
 }
 
-module.exports = { 
+module.exports = {
     createAppointment,
-    getUpcomingAppointments,};
+    getUpcomingAppointments,
+};

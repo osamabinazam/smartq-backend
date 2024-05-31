@@ -1,10 +1,16 @@
 {
   "development": {
-    "username": "postgres",
-    "password": "toor",
-    "database": "smartq_dev_db",
-    "host": "127.0.0.1",
-    "dialect": "postgres"
+    "username": "default",
+    "password": "dJ7tR3UPSKwh",
+    "database": "verceldb",
+    "host": "ep-cold-firefly-a1ys0sj3-pooler.ap-southeast-1.aws.neon.tech",
+    "dialect": "postgres",
+    "ssl": true,
+    "dialectOptions": {
+      "ssl": {
+        "require": true
+      }
+    }
   },
   "test": {
     "username": "root",

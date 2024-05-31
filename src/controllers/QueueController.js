@@ -32,8 +32,8 @@ const createQueue = async (req, res) => {
 
     // Create a new Queue object
     const queue = {
-        currentQueueSize: req.body.queueSize,
-        averageServiceTime: req.body.serviceTime,
+        currentQueueSize: req.body.queueSize? req.body.queueSize: 0,
+        averageServiceTime: req.body.serviceTime? req.body.serviceTime: 0,
         queueStartTime: req.body.startTime,
         queueEndTime: req.body.endTime,
         queueStatus: req.body.status,
@@ -107,11 +107,41 @@ const getFutureQueues = async (req, res) => {
 }
 
 /**
+ * Get Queue By Status 
+ * 
+ */
+const getQueuesByStatus = async (req, res) => {
+
+    if (!req.query) {
+        return res.status(400).json({ error: "Request query cannot be empty." });
+    }
+
+    try {
+        const queueStatus = req.query?.queueStatus;
+        // Check if queueStatus is provided
+        if (!queueStatus) {
+            return res.status(400).json({ error: "queueStatus parameter is required." });
+        }
+        
+        const queues = await QueueService.getCommingQueuesByQueueStatus(queueStatus, {
+            include: ['vendor_profile', 'service', 'appointments']
+        });
+        return res.status(200).json(queues);
+    } catch (error) {
+        console.error("Error fetching queues:", error);
+        return res.status(500).json({ error: "Failed to fetch queues." });
+    }
+}
+
+
+/**
  * exports the createQueue function
  * @exports createQueue
  */
 
 module.exports = {
     createQueue,
-    getQueueByVendorId
+    getQueueByVendorId,
+    getFutureQueues,
+    getQueuesByStatus
 };

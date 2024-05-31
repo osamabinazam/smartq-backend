@@ -6,5 +6,6 @@ const router = express.Router();
 
 // Provide Service Routes
 router.post('/', authenticateToken, authorizeRoles('vendor'), ProvideServiceController.createService);
+router.get('/vendor-services', authenticateToken, authorizeRoles('vendor'), ProvideServiceController.getVendorServices);
 
 module.exports = router;

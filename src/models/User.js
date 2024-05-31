@@ -28,7 +28,8 @@ const UserModel = (sequelize) => {
     password: { type: DataTypes.STRING(255), allowNull: false },
     lastlogin: { type: DataTypes.DATE, defaultValue: null },
     usertype: { type: DataTypes.ENUM('vendor', 'customer', 'admin'), defaultValue: 'customer' },
-    isactive: { type: DataTypes.BOOLEAN, defaultValue: true }
+    isactive: { type: DataTypes.BOOLEAN, defaultValue: true },
+    isVarified: { type: DataTypes.BOOLEAN, defaultValue: false }
   }, {
     
     sequelize,

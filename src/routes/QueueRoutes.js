@@ -9,6 +9,7 @@ router.post('/create', authenticateToken, authorizeRoles('vendor'), QueueControl
 // router.get('/', authenticateToken, authorizeRoles('vendor'), QueueController.getFutureQueues);
 router.get('/', authenticateToken, authorizeRoles('vendor'), QueueController.getQueueByVendorId);
 
+router.get('/status', authenticateToken, authorizeRoles('vendor', 'customer'), QueueController.getQueuesByStatus);
 
 module.exports = router;
 

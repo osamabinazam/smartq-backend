@@ -29,4 +29,6 @@ router.get('/customer/:id', authenticateToken, authorizeRoles('customer', 'vendo
 router.put('/customer/:id', authenticateToken, authorizeRoles('customer'), ProfileController.updateCustomerProfile);
 router.delete('/customer/:id', authenticateToken, authorizeRoles('customer'), ProfileController.deleteCustomerProfile);
 
+router.get('/vendor/vendor-by-userid',authenticateToken, authorizeRoles('customer', 'vendor'), ProfileController.getVendorProfileByUserId )
+
 module.exports = router;

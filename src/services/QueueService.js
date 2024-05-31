@@ -176,6 +176,22 @@ const getQueuesByQueueStatus = async (queueStatus) => {
     }
 }
 
+/**
+ * Get comming Queues By Queue Status (active, inactive, full, etc)
+ */
+const getCommingQueuesByQueueStatus = async (queueStatus) => {
+    try {
+        return await QueueModel.findAll({
+            where: { queueStatus: queueStatus },
+            order: [['createdAt', 'DESC']],
+            include: [ 'appointments', 'services']
+        });
+    } catch (error) {
+        console.error("Error fetching queue:", error);
+        throw new Error("Failed to fetch queue.");
+    }
+}
+
 module.exports = {
     createQueue,
     getQueueById,
@@ -185,5 +201,6 @@ module.exports = {
     getQueuesByQueueStatus,
     getQueuesByVendorProfile,
     getQueueByTimeRange,
-    updateQueueStatus
+    updateQueueStatus,
+    getCommingQueuesByQueueStatus
 };

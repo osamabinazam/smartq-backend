@@ -6,4 +6,9 @@ const jwtTokens = (user) => {
     return { accessToken, refreshToken };
 };
 
+
+// const invalidateTokenn(token) =>{
+    
+// }
+
 module.exports = jwtTokens;

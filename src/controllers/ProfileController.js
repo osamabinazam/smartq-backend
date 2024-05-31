@@ -110,19 +110,19 @@ const createCustomerProfile = async (req, res) => {
  */
 
 const getVendorProfileByUserId = async (req, res) => {
-    console.log(res.body);
+    
     if (!req.body) {
         return res.status(400).send({
             message: "Data to update can not be empty!"
         });
     }
-    const userId = req.params.id;
+    const userId = req.user.userid;
     if (!userId) {
         return res.status(400).send({ message: 'User ID is required.' });
     }
 
     try {
-        const vendorProfile = await ProfileService.getVendorProfileById(userId);
+        const vendorProfile = await ProfileService.getVendorProfileByUserId(userId);
         if (!vendorProfile) {
             return res.status(404).send({ message: 'Vendor Profile not found.' });
         }

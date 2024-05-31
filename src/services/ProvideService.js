@@ -144,6 +144,7 @@ const deleteService = async (serviceId) => {
     }
 }
 
+
 /**
  * Expport the functions
  */
@@ -153,5 +154,6 @@ module.exports = {
     getAllServices,
     getServicesByCategory,
     updateService,
-    deleteService
+    deleteService,
+
 };

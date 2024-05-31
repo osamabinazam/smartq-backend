@@ -142,10 +142,10 @@ const checkAppoitment = async (vendorid, customerid, serviceid, queueid ) => {
 
 const getUpcomingAppointments = async (queueId) => {
     try {
+        console.log("Queue UD in Srevice is : ", queueId)
         return await AppointmentModel.findAll({ where: { queueid: queueId },
             order: [['appointmentDateTime', 'ASC']],
-            limit: 5,
-            include: ['customer_profile']
+            include: ['customer_profile', 'service']
             
         });
     } catch (error) {

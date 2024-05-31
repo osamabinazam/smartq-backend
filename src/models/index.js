@@ -49,6 +49,7 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.passw
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+
 /**
  * Export the db object
  */
