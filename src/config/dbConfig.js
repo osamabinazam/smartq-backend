@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config();
 const Sequelize = require('sequelize');
 
 /**
@@ -17,16 +17,17 @@ const Sequelize = require('sequelize');
  * @exports dbConfig
  */
 const dbConfig = {
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'postgres',
-    password:process.env.DB_PASS || 'toor',
-    database: process.env.DB_NAME || 'smartq_db',
+    host: process.env.DB_HOST || 'ep-cold-firefly-a1ys0sj3-pooler.ap-southeast-1.aws.neon.tech',
+    user: process.env.DB_USER || 'default',
+    password:process.env.DB_PASS || 'dJ7tR3UPSKwh',
+    database: process.env.DB_NAME || 'verceldb',
     dialect: process.env.DB_DIALECT || 'postgres',
     dialectOptions: {
-        ssl: {
-            require: process.env.DB_SSL || false,
-        }
-    },
+      ssl: 'true' ? {
+          require: true,
+          rejectUnauthorized: false
+      } : false
+  },
     pool: {
         max: 10,
         min: 1, 
@@ -49,4 +50,6 @@ const dbConfig = {
  * @type {dbConfig}
  * @exports dbConfig
  */
+
+console.log("Database Config is :\n", dbConfig)
 module.exports = dbConfig;

@@ -105,6 +105,8 @@ const getAppointmentsByCustomerId = async (customerId) => {
  * @throws {Error} - Throws error if the operation fails
  */
 const getAppointmentsByQueueId = async (queueId) => {
+
+    console.log(queueId)
     try {
         return await AppointmentModel.findAll({ where: { queueid: queueId } });
     } catch (error) {
@@ -130,7 +132,7 @@ const getAppointmentsByServiceId = async (serviceId) => {
 
 
 
-const checkAppoitment = async (vendorid, customerid, serviceid, queueid ) => {
+const checkAppointment = async (vendorid, customerid, serviceid, queueid ) => {
     try {
         return await AppointmentModel.findOne({ where: { vendorprofileid: vendorid, customerprofileid: customerid, serviceid: serviceid, queueid: queueid}});
     }
@@ -142,11 +144,11 @@ const checkAppoitment = async (vendorid, customerid, serviceid, queueid ) => {
 
 const getUpcomingAppointments = async (queueId) => {
     try {
-        console.log("Queue UD in Srevice is : ", queueId)
-        return await AppointmentModel.findAll({ where: { queueid: queueId },
+        return await AppointmentModel.findAll({ 
+            where: { queueid: queueId, appointmentStatus: 'scheduled' },
             order: [['appointmentDateTime', 'ASC']],
-            include: ['customer_profile', 'service']
-            
+            include: ['service', 'customer_profile', 'vendor_profile'  ]
+
         });
     } catch (error) {
         console.error("Error fetching appointment:", error);
@@ -223,7 +225,7 @@ module.exports = {
     getAppointmentsByCustomerId,
     getAppointmentsByQueueId,
     getAppointmentsByServiceId,
-    checkAppoitment,
+    checkAppointment,
     getUpcomingAppointments,
     getNumberOfAppointmentsInQueue,
     getNumberOfAppointmentsInQueueByStatus,

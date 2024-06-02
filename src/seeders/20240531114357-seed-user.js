@@ -1,40 +1,80 @@
 'use strict';
-
-const { v4: uuidv4 } = require('uuid'); // To generate UUIDs
+const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcrypt');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert('users', [
+
+    const users = [
       {
         userid: uuidv4(),
         username: 'john_doe',
         email: 'john.doe@example.com',
-        gender: 'male',
-        password: 'hashedpassword1', // Replace with hashed password
-        lastlogin: new Date(),
-        usertype: 'customer',
+        password: bcrypt.hashSync('password123', 10),
+        usertype: 'vendor',
         isactive: true,
-        isVarified: false,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
         userid: uuidv4(),
-        username: 'jane_doe',
-        email: 'jane.doe@example.com',
-        gender: 'female',
-        password: 'hashedpassword2', // Replace with hashed password
-        lastlogin: new Date(),
+        username: 'jane_smith',
+        email: 'jane.smith@example.com',
+        password: bcrypt.hashSync('password123', 10),
         usertype: 'vendor',
         isactive: true,
-        isVarified: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        userid: uuidv4(),
+        username: 'william_brown',
+        email: 'william.brown@example.com',
+        password: bcrypt.hashSync('password123', 10),
+        usertype: 'vendor',
+        isactive: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        userid: uuidv4(),
+        username: 'emma_johnson',
+        email: 'emma.johnson@example.com',
+        password: bcrypt.hashSync('password123', 10),
+        usertype: 'customer',
+        isactive: true,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      },
+      {
+        userid: uuidv4(),
+        username: 'liam_wilson',
+        email: 'liam.wilson@example.com',
+        password: bcrypt.hashSync('password123', 10),
+        usertype: 'customer',
+        isactive: true,
         createdAt: new Date(),
         updatedAt: new Date()
       }
-    ], {});
+    ];
+
+    try{
+      await queryInterface.bulkInsert('users', users, {});
+    
+    }
+
+    catch(error){
+      console.error('Error in seeder: ', error);
+    }
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('users', null, {});
+    try{
+      await queryInterface.bulkDelete('users', null, {});
+    }
+      
+      catch(error){
+        console.error('Error in seeder: ', error);
+      }
   }
 };

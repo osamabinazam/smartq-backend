@@ -31,6 +31,6 @@ async function insertCategories() {
 }
 
 // Execute insertCategories function
-insertCategories();
+// insertCategories();
 
 module.exports = insertCategories;

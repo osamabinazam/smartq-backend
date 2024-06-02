@@ -76,13 +76,16 @@ const getQueueByVendorId = async (req, res) => {
 
     try {
         const vendorProfile = await ProfileService.getVendorProfileByUserId(req.user.userid);
+
+
+        
         if (!vendorProfile) {
             return res.status(404).json({ error: "Vendor profile not found." });
         }
 
         const queue = await QueueService.getQueueByVendorId(vendorProfile.vendorprofileid);
         
-        console.log(queue)
+        // console.log(queue)
         
         return res.status(200).json(queue);
     } catch (error) {

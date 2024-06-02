@@ -72,8 +72,8 @@ const getAllNearbyVendors = async (latitude, longitude, radius) => {
     try {
         return await VendorProfileModel.findAll({
             include: [{
-                model: LocationModel,
-                as: 'Locations', // assuming 'Locations' is the alias in the association
+                model: db.LocationModel,
+                as: 'business_locations', // assuming 'Locations' is the alias in the association
                 where: db.sequelize.where(
                     db.sequelize.fn(
                         'ST_DWithin',
@@ -85,6 +85,9 @@ const getAllNearbyVendors = async (latitude, longitude, radius) => {
                 )
             }]
         });
+
+
+
     } catch (error) {
         console.error("Error fetching nearby vendors:", error);
         throw new Error("Failed to fetch nearby vendors.");

@@ -3,6 +3,7 @@ const path = require('path');
 const { Sequelize } = require('sequelize');
 const dbConfig = require('../config/dbConfig.js');
 const setupAssociations = require('./associations/associations.js');
+require('dotenv').config();
 
 const db = {};
 
@@ -40,7 +41,8 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.passw
       }
     }
     setupAssociations(db); // Setup model associations
-     sequelize.sync({ force: true, alter: true }); // Sync all models with the database
+     sequelize.sync({ force: false
+      , alter: false }); // Sync all models with the database
     console.log('All models were synchronized successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);

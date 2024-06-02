@@ -7,7 +7,7 @@ const router = express.Router();
 // Queue Routes
 router.post('/create', authenticateToken, authorizeRoles('vendor'), QueueController.createQueue);
 // router.get('/', authenticateToken, authorizeRoles('vendor'), QueueController.getFutureQueues);
-router.get('/', authenticateToken, authorizeRoles('vendor'), QueueController.getQueueByVendorId);
+router.get('/', authenticateToken, authorizeRoles('vendor', 'customer'), QueueController.getQueueByVendorId);
 
 router.get('/status', authenticateToken, authorizeRoles('vendor', 'customer'), QueueController.getQueuesByStatus);
 

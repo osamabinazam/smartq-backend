@@ -1,6 +1,7 @@
 const db = require('../models/index.js');
 const ProfileService = require('../services/ProfileService.js');
 const ContactService = require('../services/ContactService.js');
+const axios = require('axios');
 
 const User = db.UserModel;
 
@@ -440,30 +441,129 @@ const deleteCustomerProfile = async (req, res) => {
  * 
  */
 const getAllNearbyVendors = async (req, res) => {
-
-    if (!req.query) {
-        return res.status(400).send({
-            message: "Data to update can not be empty!"
-        });
-    }
-
-    const { latitude, longitude, radius } = req.query; 
-
-    if (!latitude || !longitude || !radius) {
-        return res.status(400).json({ message: "Missing required query parameters: latitude, longitude, radius." });
-    }
-
-
     try {
-        const vendors = await ProfileService.getAllNearbyVendors(parseFloat(latitude), parseFloat(longitude), parseFloat(radius));
-        res.status(200).send(vendors);
+        // Check if query parameters are present
+        if (!req.query) {
+            return res.status(400).send({
+                message: "Query parameters cannot be empty!"
+            });
+        }
+
+        const { latitude, longitude, radius } = req.query;
+
+        // Validate query parameters
+        if (!latitude || !longitude || !radius) {
+            return res.status(400).json({
+                message: "Missing required query parameters: latitude, longitude, radius.",
+                details: {
+                    message: "Missing required query parameters: latitude, longitude, radius.",
+                    code: "InvalidInput"
+                }
+            });
+        }
+
+        const lat = parseFloat(latitude);
+        const lon = parseFloat(longitude);
+        const rad = parseFloat(radius);
+
+        // Ensure latitude, longitude, and radius are valid numbers
+        if (isNaN(lat) || isNaN(lon) || isNaN(rad)) {
+            return res.status(400).json({
+                message: `Coordinate is invalid: ${latitude},${longitude}`,
+                details: {
+                    message: `Coordinate is invalid: ${latitude},${longitude}`,
+                    code: "InvalidInput"
+                }
+            });
+        }
+
+        // Fetch nearby vendors from ProfileService
+        const vendors = await ProfileService.getAllNearbyVendors(lat, lon, rad);
+
+        // Check if vendors are found
+        if (vendors.length === 0) {
+            return res.status(200).json([]);
+        }
+
+        
+        console.log("latitude ",vendors[0].dataValues.business_locations[0].latitude);
+        // Extract valid vendor locations
+        const validVendors = vendors.filter(vendor => 
+            vendor.dataValues.business_locations && 
+            vendor.dataValues.business_locations.length > 0 &&
+            !isNaN(vendor.dataValues.business_locations[0].latitude) && 
+            !isNaN(vendor.dataValues.business_locations[0].longitude)
+        );
+
+        if (validVendors.length === 0) {
+            return res.status(400).json({
+                message: 'No vendors with valid coordinates found.',
+                details: {
+                    message: 'All retrieved vendors have invalid coordinates.',
+                    code: 'InvalidCoordinates'
+                }
+            });
+        }
+
+        const mapboxToken = 'pk.eyJ1Ijoib3NhbWFiaW5hemFtIiwiYSI6ImNsd3hmOXZ0NjExZHYybnIzOTF5ZDhpYmwifQ.IZYJjsum8TR-ZXQWHJFehw';
+        const origin = `${lon},${lat}`;
+        const destinations = validVendors.map(vendor => {
+            const location = vendor.dataValues.business_locations[0];
+            return `${location.longitude},${location.latitude}`;
+        }).join(';');
+
+        console.log("Destination is : ", destinations)
+
+        const url = `https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${origin};${destinations}?access_token=${mapboxToken}`;
+
+        // Fetch distance matrix from Mapbox
+        const response = await axios.get(url);
+        const matrix = response.data;
+
+        const distances = matrix.distances && matrix.distances[0] ? matrix.distances[0] : [];
+
+        // Prepare results with distance only for valid coordinates
+        const results = validVendors.map((vendor, index) => {
+            const distance = distances[index] !== undefined ? distances[index] : 'N/A';
+            const location = vendor.dataValues.business_locations[0];
+            return {
+                vendorprofileid: vendor.dataValues.vendorprofileid,
+                name: vendor.dataValues.businessname,
+                latitude: location.latitude,
+                longitude: location.longitude,
+                distance,
+            };
+        });
+
+        console.log("Results", results)
+
+        // Send results
+        res.status(200).send(results);
     } catch (error) {
         console.error("Error fetching nearby vendors:", error);
-        return res.status(500).send({ message: 'Failed to fetch nearby vendors.' });
+
+        // Determine the error type and send appropriate response
+        if (error.isAxiosError && error.response) {
+            // Handle Axios errors
+            return res.status(error.response.status).send({
+                message: error.response.data.message || 'Error fetching data from external API.',
+                details: error.response.data
+            });
+        } else if (error instanceof Sequelize.ValidationError) {
+            // Handle Sequelize validation errors
+            return res.status(400).send({
+                message: 'Database validation error.',
+                details: error.errors.map(err => err.message)
+            });
+        } else {
+            // Handle other types of errors
+            return res.status(500).send({
+                message: 'Internal server error.',
+                details: error.message
+            });
+        }
     }
-
-}
-
+};
 /**
  * Export controller functions as a module 
  */

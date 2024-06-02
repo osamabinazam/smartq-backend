@@ -28,7 +28,6 @@ const CertificateModel = (sequelize) => {
     end_date: { type: DataTypes.DATEONLY },
     certificate_url: { type: DataTypes.TEXT },
     image_url: { type: DataTypes.TEXT },
-    created_at: { type: DataTypes.DATE }
   }, {
     sequelize,
     modelName: 'Certificate',
