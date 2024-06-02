@@ -1,6 +1,12 @@
 {
-  
   "development": {
+    "username": "postgres",
+    "password": "toor",
+    "database": "smartq_db",
+    "host": "localhost",
+    "dialect": "postgres"
+  },
+  "prod": {
     "username": "default",
     "password": "dJ7tR3UPSKwh",
     "database": "verceldb",

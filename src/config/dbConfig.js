@@ -17,13 +17,13 @@ const Sequelize = require('sequelize');
  * @exports dbConfig
  */
 const dbConfig = {
-    host: process.env.DB_HOST || 'ep-cold-firefly-a1ys0sj3-pooler.ap-southeast-1.aws.neon.tech',
-    user: process.env.DB_USER || 'default',
-    password:process.env.DB_PASS || 'dJ7tR3UPSKwh',
-    database: process.env.DB_NAME || 'verceldb',
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'postgres',
+    password:process.env.DB_PASS || 'toor',
+    database: process.env.DB_NAME || 'smartq_db',
     dialect: process.env.DB_DIALECT || 'postgres',
     dialectOptions: {
-      ssl: 'true' ? {
+      ssl: process.env.DB_SSL === 'true' ? {
           require: true,
           rejectUnauthorized: false
       } : false

@@ -83,7 +83,7 @@ const getAllNearbyVendors = async (latitude, longitude, radius) => {
                     ),
                     true
                 )
-            }]
+            }, 'services','operating_hours']
         });
 
 

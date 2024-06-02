@@ -485,13 +485,11 @@ const getAllNearbyVendors = async (req, res) => {
             return res.status(200).json([]);
         }
 
-        
-        console.log("latitude ",vendors[0].dataValues.business_locations[0].latitude);
         // Extract valid vendor locations
-        const validVendors = vendors.filter(vendor => 
-            vendor.dataValues.business_locations && 
+        const validVendors = vendors.filter(vendor =>
+            vendor.dataValues.business_locations &&
             vendor.dataValues.business_locations.length > 0 &&
-            !isNaN(vendor.dataValues.business_locations[0].latitude) && 
+            !isNaN(vendor.dataValues.business_locations[0].latitude) &&
             !isNaN(vendor.dataValues.business_locations[0].longitude)
         );
 
@@ -512,33 +510,43 @@ const getAllNearbyVendors = async (req, res) => {
             return `${location.longitude},${location.latitude}`;
         }).join(';');
 
-        console.log("Destination is : ", destinations)
-
         const url = `https://api.mapbox.com/directions-matrix/v1/mapbox/driving/${origin};${destinations}?access_token=${mapboxToken}`;
 
         // Fetch distance matrix from Mapbox
         const response = await axios.get(url);
         const matrix = response.data;
 
-        const distances = matrix.distances && matrix.distances[0] ? matrix.distances[0] : [];
+        // Extract distances and durations from matrix
+        const distances = matrix.destinations.slice(1).map(destination => destination.distance);
+        const durations = matrix.durations[0].slice(1); // Exclude the first duration (origin to itself)
 
-        // Prepare results with distance only for valid coordinates
+        // Prepare results with distance and duration only for valid coordinates
         const results = validVendors.map((vendor, index) => {
-            const distance = distances[index] !== undefined ? distances[index] : 'N/A';
             const location = vendor.dataValues.business_locations[0];
             return {
                 vendorprofileid: vendor.dataValues.vendorprofileid,
+                servicetitle: vendor.dataValues.services[0].name,
+                servicedescription: vendor.dataValues.services[0].description,
+                serviceprice: vendor.dataValues.services[0].price,
                 name: vendor.dataValues.businessname,
                 latitude: location.latitude,
                 longitude: location.longitude,
-                distance,
+                distance: distances[index],
+                duration: durations[index] !== undefined ? durations[index] : 'N/A',
+                operatinghours: {
+                    opentime: vendor.dataValues.operating_hours[0].opentime,
+                    closetime: vendor.dataValues.operating_hours[0].closetime,
+                    isClosed: vendor.dataValues.operating_hours[0].isclosed
+                }
             };
         });
 
-        console.log("Results", results)
-
         // Send results
-        res.status(200).send(results);
+        res.status(200).send({
+            results: results,
+            message: 'Successfully fetched nearby vendors.',
+            response: matrix
+        });
     } catch (error) {
         console.error("Error fetching nearby vendors:", error);
 
@@ -564,6 +572,13 @@ const getAllNearbyVendors = async (req, res) => {
         }
     }
 };
+
+
+
+
+
+
+
 /**
  * Export controller functions as a module 
  */

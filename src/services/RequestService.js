@@ -11,7 +11,7 @@ const CategoryModel = db.CategoryModel;
  */
 const createCategory = async (category) => {
     try {
-        return await CategoryModel.create(category);
+        return await CategoryModel.create(category, );
     } catch (error) {
         console.error("Error creating category:", error);
         throw new Error("Failed to create category.");
