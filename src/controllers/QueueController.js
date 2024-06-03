@@ -96,12 +96,23 @@ const getQueueByVendorId = async (req, res) => {
 
 
 /**
- * Get Future Queues
+ * Get Inactive queues of vendor
  * @param {Object} req - Express request object
  */
 const getFutureQueues = async (req, res) => {
+    // Check body
+    if (!req.body) {
+        return res.status(400).json({ error: "Request body cannot be empty." });
+    }
+
     try {
-        const queues = await QueueService.getQueuesByVendorProfile();
+        const vendorProfile = await ProfileService.getVendorProfileByUserId(req.user.userid);
+        console.log(req.user.userid)
+        if (!vendorProfile) {
+            return res.status(404).json({ error: "Vendor profile not found." });
+        }
+
+        const queues = await QueueService.getFutureQueues(vendorProfile.vendorprofileid);
         return res.status(200).json(queues);
     } catch (error) {
         console.error("Error fetching queues:", error);
@@ -125,10 +136,16 @@ const getQueuesByStatus = async (req, res) => {
         if (!queueStatus) {
             return res.status(400).json({ error: "queueStatus parameter is required." });
         }
+
+        // get Vendor Profile
+        const vendorProfile = await ProfileService.getVendorProfileByUserId(req.user.userid);
+        if (!vendorProfile) {
+            return res.status(404).json({ error: "Vendor profile not found." });
+        }
+
+
         
-        const queues = await QueueService.getCommingQueuesByQueueStatus(queueStatus, {
-            include: ['vendor_profile', 'service', 'appointments']
-        });
+        const queues = await QueueService.getQueuesByQueueStatus(queueStatus, vendorProfile.vendorprofileid);
         return res.status(200).json(queues);
     } catch (error) {
         console.error("Error fetching queues:", error);

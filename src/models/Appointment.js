@@ -57,6 +57,9 @@ const AppointmentModel = (sequelize) => {
   return Appointment;
 };
 
+
+
+
 /**
  * Exports the Appointment model function for use in other parts of the application.
  */

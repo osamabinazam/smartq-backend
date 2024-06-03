@@ -3,41 +3,43 @@ const { v4: uuidv4 } = require('uuid');
 const db = require('../models');
 const VendorProfileModel = require('../models/VendorProfile');
 const ServiceModel = require('../models/Service');
-const setupAssociations = require('../models/associations/associations');
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-
-
     const VendorProfile = db.VendorProfileModel;
-    const Service = db.ServiceModel
-
-
+    const Service = db.ServiceModel;
 
     try {
-      const vendors = await VendorProfile.findAll(
-        {
-          include:['services']
-        }
-       
-      );
+      const vendors = await VendorProfile.findAll({
+        include: ['services']
+      });
+
       const queues = [];
 
-      for (const vendor of vendors) {
-        // Fetch services for each vendor
-        const vendorServices = await vendor.getServices();
+      vendors.forEach((vendor) => {
+        const service = vendor.services[0]; // Assuming each vendor has one service
+        const now = new Date();
+        const activeQueue = {
+          queueID: uuidv4(),
+          currentQueueSize: 0,
+          averageServiceTime: 0,
+          queueStartTime: now,
+          queueEndTime: new Date(now.getTime() + 2 * 60 * 60 * 1000), // 2 hours later
+          queueStatus: 'active',
+          serviceid: service.serviceid,
+          vendorprofileid: vendor.vendorprofileid,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
 
-        vendorServices.forEach((service) => {
-          const now = new Date();
+        queues.push(activeQueue);
+
+        for (let i = 0; i < 5; i++) {
           const futureDate = new Date();
-          futureDate.setDate(futureDate.getDate() + 2); // 2 days in the future
-          const pastDate = new Date();
-          pastDate.setDate(pastDate.getDate() - 2); // 2 days in the past
-
-          // Create queues for other days
+          futureDate.setDate(futureDate.getDate() + (i + 1)); // Upcoming queue
           queues.push({
             queueID: uuidv4(),
-            currentQueueSize: 0,
+            currentQueueSize: Math.floor(Math.random() * 10),
             averageServiceTime: 0,
             queueStartTime: futureDate,
             queueEndTime: new Date(futureDate.getTime() + 2 * 60 * 60 * 1000), // 2 hours later
@@ -48,21 +50,8 @@ module.exports = {
             updatedAt: new Date()
           });
 
-          // Create current active queue
-          queues.push({
-            queueID: uuidv4(),
-            currentQueueSize: 0,
-            averageServiceTime: 0,
-            queueStartTime: now,
-            queueEndTime: new Date(now.getTime() + 2 * 60 * 60 * 1000), // 2 hours later
-            queueStatus: 'active',
-            serviceid: service.serviceid,
-            vendorprofileid: vendor.vendorprofileid,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          });
-
-          // Create completed queue
+          const pastDate = new Date();
+          pastDate.setDate(pastDate.getDate() - (i + 1)); // Completed queue
           queues.push({
             queueID: uuidv4(),
             currentQueueSize: 20,
@@ -75,8 +64,8 @@ module.exports = {
             createdAt: new Date(),
             updatedAt: new Date()
           });
-        });
-      }
+        }
+      });
 
       await queryInterface.bulkInsert('queues', queues, {});
     } catch (error) {

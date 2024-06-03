@@ -9,11 +9,11 @@ router.post('/create', authenticateToken, authorizeRoles('vendor'), QueueControl
 // router.get('/', authenticateToken, authorizeRoles('vendor'), QueueController.getFutureQueues);
 router.get('/', authenticateToken, authorizeRoles('vendor', 'customer'), QueueController.getQueueByVendorId);
 
+
 router.get('/status', authenticateToken, authorizeRoles('vendor', 'customer'), QueueController.getQueuesByStatus);
 
-router.get('/active', authenticateToken, authorizeRoles('vendor', 'customer'), QueueController.getActiveQueues);
+router.get('/inactive', authenticateToken, authorizeRoles('vendor' , 'customer'), QueueController.getFutureQueues);
 
-router.get('/inactive', authenticateToken, authorizeRoles('vendor' , 'customer'), QueueController.getInactiveQueues);
 
 module.exports = router;
 

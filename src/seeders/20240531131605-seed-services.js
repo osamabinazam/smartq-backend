@@ -15,40 +15,26 @@ module.exports = {
       const services = [];
       const vendorServices = [];
 
-      categories.forEach((category) => {
-        const serviceData = [
-          {
-            name: `${category.categoryname} Consultation`,
-            description: `Consultation services for ${category.categoryname.toLowerCase()}.`,
-            price: 100.00
-          },
-          {
-            name: `${category.categoryname} Training`,
-            description: `Training services in ${category.categoryname.toLowerCase()}.`,
-            price: 200.00
-          }
-        ];
+      vendors.forEach((vendor) => {
+        const category = categories[Math.floor(Math.random() * categories.length)];
+        const serviceId = uuidv4();
+        const service = {
+          serviceid: serviceId,
+          name: `${category.categoryname} Service`,
+          description: `Service related to ${category.categoryname}`,
+          price: 100.00,
+          categoryid: category.categoryid,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
 
-        serviceData.forEach((service) => {
-          const serviceId = uuidv4();
-          services.push({
-            serviceid: serviceId,
-            name: service.name,
-            description: service.description,
-            price: service.price,
-            categoryid: category.categoryid,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          });
+        services.push(service);
 
-          // Associate each service with a random vendor
-          const randomVendor = vendors[Math.floor(Math.random() * vendors.length)];
-          vendorServices.push({
-            vendorprofileid: randomVendor.vendorprofileid,
-            serviceid: serviceId,
-            createdAt: new Date(),
-            updatedAt: new Date()
-          });
+        vendorServices.push({
+          vendorprofileid: vendor.vendorprofileid,
+          serviceid: serviceId,
+          createdAt: new Date(),
+          updatedAt: new Date()
         });
       });
 

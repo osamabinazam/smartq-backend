@@ -22,12 +22,12 @@ const dbConfig = {
     password:process.env.DB_PASS || 'toor',
     database: process.env.DB_NAME || 'smartq_db',
     dialect: process.env.DB_DIALECT || 'postgres',
-    dialectOptions: {
-      ssl: process.env.DB_SSL === 'true' ? {
-          require: true,
-          rejectUnauthorized: false
-      } : false
-  },
+  //   dialectOptions: {
+  //     ssl: process.env.DB_SSL === 'true' ? {
+  //         require: true,
+  //         rejectUnauthorized: false
+  //     } : false
+  // },
     pool: {
         max: 10,
         min: 1, 

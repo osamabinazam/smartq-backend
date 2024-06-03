@@ -19,7 +19,7 @@ const createAppointment = async (req, res) => {
     const {
         appointmentDateTime,
         appointmentStatus,
-
+        customerprofileid,
         vendorprofileid,
         serviceid,
         queueid
@@ -37,18 +37,20 @@ const createAppointment = async (req, res) => {
         });
     }
 
-    console.log("req.user", req.user);
+    // console.log("req.user", req.user);
 
     // Check if the user is a customer or vendor
-    if (req.user.usertype !== 'customer') {
-        return res.status(403).json({
-            message: 'Forbidden. Only customers can create appointments.',
-        });
-    }
+    // if (req.user.usertype !== 'customer') {
+    //     return res.status(403).json({
+    //         message: 'Forbidden. Only customers can create appointments.',
+    //     });
+    // }
 
     try {
+
+        console.log(req.body)
         // Check if the customer profile exists
-        const customerProfile = await ProfileService.getCustomerProfileByUserId(req.user.userid);
+        const customerProfile = await ProfileService.getCustomerProfileById(customerprofileid);
 
         if (!customerProfile) {
             return res.status(404).json({
@@ -57,7 +59,6 @@ const createAppointment = async (req, res) => {
         }
 
 
-        console.log(customerProfile)
 
         // Check if the vendor profile exists
         const vendorProfile = await ProfileService.getVendorProfileById(vendorprofileid);
@@ -94,7 +95,7 @@ const createAppointment = async (req, res) => {
         }
 
         // Check the existence of appointment
-        const appointmentExists = await AppointmentService.checkAppointment(vendorprofileid, customerProfile.dataValues.customerprofileid, serviceid, queueid);
+        const appointmentExists = await AppointmentService.checkAppointment(vendorprofileid, customerprofileid, serviceid, queueid);
         if (appointmentExists) {
             return res.status(400).json({
                 message: 'Appointment already exists.',
@@ -106,7 +107,7 @@ const createAppointment = async (req, res) => {
             startTime: null,
             endTime: null,
             appointmentStatus,
-            customerprofileid:customerProfile.dataValues.customerprofileid,
+            customerprofileid,
             vendorprofileid,
             serviceid,
             queueid,
@@ -186,7 +187,53 @@ const getUpcomingAppointments = async (req, res) => {
     }
 }
 
+/**
+ * Update Appointment
+ */
+const updateAppointment = async (req, res) => {
+    if (!req.body) {
+        return res.status(400).json({
+            message: 'No appointment data found in the request.',
+        });
+    }
+
+    const appointmentId = req.params.id;
+
+    if (!appointmentId) {
+        return res.status(400).json({
+            message: 'Appointment ID is required',
+        });
+    }
+
+    try {
+        const appointment = await AppointmentService.getAppointmentById(appointmentId);
+
+        if (!appointment) {
+            return res.status(404).json({
+                message: 'Appointment not found.',
+            });
+        }
+
+        const updatedAppointment = await AppointmentService.updateAppointment(appointmentId, req.body);
+
+        if (!updatedAppointment) {
+            return res.status(500).json({
+                message: 'Failed to update appointment.',
+            });
+        }
+
+        return res.status(200).json(updatedAppointment);
+    } catch (error) {
+        console.error('Failed to update appointment:', error);
+        return res.status(500).json({
+            message: 'Failed to update appointment.',
+            error: error.message,
+        });
+    }
+}
+
 module.exports = {
     createAppointment,
     getUpcomingAppointments,
+    updateAppointment,
 };

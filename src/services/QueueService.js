@@ -100,7 +100,6 @@ const getQueueByVendorId = async (vendorId) => {
 
 
         const noOfRemaingAppointments = await AppointmentService.getNumberOfAppointmentsInQueueByStatus(queueData.queueID, 'scheduled');
-        console.log(noOfRemaingAppointments)
 
         queueData.dataValues['remaing'] = await noOfRemaingAppointments;
 
@@ -121,7 +120,6 @@ const getQueuesByVendorProfile = async (vendorProfile) => {
     try {
         return await QueueModel.findAll({
             where: { vendorprofile: vendorProfile },
-
             order: [['createdAt', 'DESC']],
             include: [
                 'appointments',
@@ -160,14 +158,14 @@ const getQueueByTimeRange = async (startTime, endTime) => {
 /**
  * Get Queues By Queue Status (active, inactive, full, etc)
  */
-const getQueuesByQueueStatus = async (queueStatus) => {
+const getQueuesByQueueStatus = async (queueStatus, vid) => {
     try {
+
         return await QueueModel.findAll({
-            where: { status: queueStatus },
+            where: { queueStatus: queueStatus, vendorprofileid:vid},
             order: [['createdAt', 'DESC']],
             include: [
-                { model: db.AppointmentModel },
-                { model: db.ServiceModel }
+                'appointments', 'services'
             ]
         });
     } catch (error) {
