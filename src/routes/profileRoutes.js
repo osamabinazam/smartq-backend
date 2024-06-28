@@ -28,10 +28,11 @@ router.post('/vendor/:id/operatinghour', authenticateToken, authorizeRoles('vend
 // Customer Profile Routes
 router.post('/customer', authenticateToken, authorizeRoles('customer', 'admin', 'vendor'), ProfileController.createCustomerProfile);
 router.get('/customer', authenticateToken, authorizeRoles('customer', 'admin', 'vendor'), ProfileController.getAllCustomerProfiles);
+router.get('/customer/customer-by-userid', authenticateToken, authorizeRoles('customer', 'vendor'), ProfileController.getCustomerProfileByUserId);
+
+
 router.get('/customer/:id', authenticateToken, authorizeRoles('customer', 'vendor', 'admin'), ProfileController.getCustomerProfileById);
 router.put('/customer/:id', authenticateToken, authorizeRoles('customer'), ProfileController.updateCustomerProfile);
 router.delete('/customer/:id', authenticateToken, authorizeRoles('customer'), ProfileController.deleteCustomerProfile);
-
-router.get('/vendor/vendor-by-userid',authenticateToken, authorizeRoles('customer', 'vendor'), ProfileController.getVendorProfileByUserId )
 
 module.exports = router;

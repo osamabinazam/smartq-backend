@@ -23,7 +23,6 @@ const createService = async (req, res) => {
 
     }
 
-    console.log("Requested User : ", req.user)
     // Get the vendor profile ID Using the userID
     const vendorProfile = await ProfileService.getVendorProfileByUserId(req.user.userid);
 
@@ -33,6 +32,16 @@ const createService = async (req, res) => {
     }
 
     const categoryid = req.body.categoryid;
+
+    // console.log("Vendor Profile : ", vendorProfile)
+    // // Check whether the service exists or not before creating new service
+    // const serviceExists = await ProvideService.checkServiceExists(vendorProfile.vendorprofileid, categoryid);
+
+    // if (serviceExists) {
+    //     return res.status(400).json({ error: "Service already exists for this vendor." });
+    // }
+
+
 
     
 
@@ -90,11 +99,69 @@ const getVendorServices = async (req, res) => {
 }
 
 
+/**
+ * Update a service
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Object} - The updated service object
+ * @throws {Error} - Throws error if the operation fails
+ */
+const updateService = async (req, res) => {
+    // Check if the request body is empty
+    if (!req.body) {
+        return res.status(400).json({ error: "Request body cannot be empty." });
+    }
+
+    // Check if the request body is not an object
+    if (typeof req.body !== 'object') {
+        return res.status(400).json({ error: "Request body must be an object." });
+    }
+
+    // Get the service ID from the request parameters
+    const serviceId = req.params.id;
+
+    // Create a new Service object
+    const serviceDetails = {
+        name: req.body.name,
+        description: req.body.description,
+        price: req.body.price,
+        categoryid: req.body.categoryid,
+    };
+
+    try {
+        const updatedService = await ProvideService.updateService(serviceId, serviceDetails);
+        return res.status(200).json(updatedService);
+    } catch (error) {
+        console.error("Error updating service:", error);
+        return res.status(500).json({ error: "Failed to update service." });
+    }
+}
+
+/**
+ * delete a service
+ * @param {Object} req - Express request object
+ */
+const deleteService = async (req, res) => {
+    // Get the service ID from the request parameters
+    const serviceId = req.params.id;
+
+    console.log("Service ID : ", serviceId)
+
+    try {
+        const deletedService = await ProvideService.deleteService(serviceId);
+        return res.status(200).json(deletedService);
+    } catch (error) {
+        console.error("Error deleting service:", error);
+        return res.status(500).json({ error: "Failed to delete service." });
+    }
+}
 
 /**
  * export the createService function
  */
 module.exports = {
     createService,
-    getVendorServices
+    getVendorServices,
+    updateService,
+    deleteService
 };

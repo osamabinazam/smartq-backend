@@ -232,8 +232,132 @@ const updateAppointment = async (req, res) => {
     }
 }
 
+
+/**
+ * Get Appointment Detail
+ */
+const getAppointmentDetail = async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({
+            message: 'Unauthorized. Please log in to view appointments.',
+        });
+    }
+
+    const appointmentId = req.params.id; // Get appointment ID from the request params
+
+    if (!appointmentId) {
+        return res.status(400).json({
+            message: 'Appointment ID is required',
+        });
+    }
+
+    try {
+        // Retrieve queue status only
+        const queueStatus = await AppointmentService.getQueueStatusByAppointmentId(appointmentId);
+
+        if (queueStatus !== 'active') {
+            // Fetch minimal information if the queue is not active
+            const appointment = await db.AppointmentModel.findByPk(appointmentId, {
+                include: [
+                    {
+                        model: db.ServiceModel,
+                        as: 'service',
+                        attributes: ['name', 'price'], // Include only name and price from Service
+                    },
+                    {
+                        model: db.VendorProfileModel,
+                        as: 'vendor_profile',
+                        attributes: ['name', 'businessname', 'businesstype'], // Include only required fields from VendorProfile
+                    },
+                ],
+            });
+
+            if (!appointment) {
+                return res.status(404).json({
+                    message: 'Appointment not found.',
+                });
+            }
+
+            return res.status(200).json({
+                message: 'Queue is not active',
+                minimalInfo: {
+                    queueID: appointment.queue.queueID,
+                    service: {
+                        name: appointment.service.name,
+                        price: appointment.service.price,
+                    },
+                    vendor: {
+                        name: appointment.vendor_profile.name,
+                        businessname: appointment.vendor_profile.businessname,
+                        businesstype: appointment.vendor_profile.businesstype,
+                    },
+                },
+            });
+        }
+
+        // Fetch detailed information if the queue is active
+        const appointment = await AppointmentService.getAppointmentById(appointmentId);
+
+        if (!appointment) {
+            return res.status(404).json({
+                message: 'Appointment not found.',
+            });
+        }
+
+        // Calculate the customer's position in the queue
+        const position = await AppointmentService.getCustomerAppointmentPosition(appointment.appointment.queue.queueID, appointmentId);
+
+        // Calculate the number of completed appointments
+        const completedAppointments = await AppointmentService.getNumberOfAppointmentsInQueueByStatus(appointment.appointment.queue.queueID, 'completed');
+
+        // Calculate the number of remaining appointments
+        const totalAppointments = await AppointmentService.getNumberOfAppointmentsInQueue(appointment.appointment.queue.queueID);
+        const remainingAppointments = totalAppointments - completedAppointments - 1;
+
+        return res.status(200).json({
+            appointment: {
+                id: appointment.appointment.id,
+                dateTime: appointment.appointment.dateTime,
+                status: appointment.appointment.status,
+                position: position,
+                remainingAppointments: remainingAppointments,
+                completedAppointments: completedAppointments,
+                totalAppointments: totalAppointments,
+                service: {
+                    name: appointment.appointment.service.name,
+                    price: appointment.appointment.service.price,
+                },
+                customer: {
+                    profile: appointment.appointment.customer.profile, // Include all fields from CustomerProfile if needed
+                },
+                vendor: {
+                    name: appointment.appointment.vendor.name,
+                    businessname: appointment.appointment.vendor.businessname,
+                    businesstype: appointment.appointment.vendor.businesstype,
+                },
+                queue: {
+                    queueID: appointment.appointment.queue.queueID,
+                    currentQueueSize: appointment.appointment.queue.currentQueueSize,
+                    averageServiceTime: appointment.appointment.queue.averageServiceTime,
+                    queueStartTime: appointment.appointment.queue.queueStartTime,
+                    queueEndTime: appointment.appointment.queue.queueEndTime,
+                    queueStatus: appointment.appointment.queue.queueStatus,
+                    appointments: appointment.appointment.queue.appointments,
+                },
+            },
+        });
+    } catch (error) {
+        console.error('Failed to fetch appointment:', error);
+        return res.status(500).json({
+            message: 'Failed to fetch appointment.',
+            error: error.message,
+        });
+    }
+};
+
 module.exports = {
     createAppointment,
     getUpcomingAppointments,
     updateAppointment,
+    getAppointmentDetail
 };

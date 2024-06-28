@@ -7,9 +7,9 @@ const router = express.Router();
 // Location Routes
 router.post("/create", authenticateToken, authorizeRoles("vendor"), LocationController.createLocation);
 router.get("/location", authenticateToken, authorizeRoles("vendor", "customer"), LocationController.getAllLocations);
-router.get("/location/:id", authenticateToken, authorizeRoles("vendor", "customer"), LocationController.getLocationById);
-router.put("/location/:id", authenticateToken, authorizeRoles("vendor"), LocationController.updateLocation);
-router.delete("/location/:id", authenticateToken, authorizeRoles("vendor"), LocationController.deleteLocation);
-router.get("/location/vendor/:id", authenticateToken, authorizeRoles("vendor"), LocationController.getLocationsByVendorProfileId);
+router.get("/:id", authenticateToken, authorizeRoles("vendor", "customer"), LocationController.getLocationById);
+router.put("/:id", authenticateToken, authorizeRoles("vendor"), LocationController.updateLocation);
+router.delete("/:id", authenticateToken, authorizeRoles("vendor"), LocationController.deleteLocation);
+router.get("/vendor/:id", authenticateToken, authorizeRoles("vendor"), LocationController.getLocationsByVendorProfileId);
 
 module.exports = router;

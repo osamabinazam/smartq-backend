@@ -60,8 +60,10 @@ const updateOperatingHours = async (operatingHoursId, operatingHoursDetails) => 
  * @throws {Error} - Throws error if the operation fails
  */
 const deleteOperatingHours = async (operatingHoursId) => {
+
+    console.log("Operating Hoors  id : ", operatingHoursId)
     try {
-        return await OperatingHoursModel.destroy({ where: { operatinghoursid: operatingHoursId } });
+        return await OperatingHourModel.destroy({ where: { openinghoursid: operatingHoursId } });
     } catch (error) {
         console.error("Error deleting operating hours:", error);
         throw new Error("Failed to delete operating hours.");

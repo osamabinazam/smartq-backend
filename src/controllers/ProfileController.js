@@ -184,7 +184,7 @@ const getCustomerProfileByUserId = async (req, res) => {
         });
     }
 
-    const userId = req.params.id;
+    const userId = req.user.userid;
     if (!userId) {
         return res.status(400).send({ message: 'User ID is required.' });
     }
@@ -192,13 +192,19 @@ const getCustomerProfileByUserId = async (req, res) => {
     // Get Contact Detail 
     const contact = await ContactService.getContactByUserId(userId);
 
+    console.log("Contact :\n\n", contact)
+
 
     try {
-        const customerProfile = await ProfileService.getCustomerProfileById(userId);
+
+        console.log("Done Here 1")
+        const customerProfile = await ProfileService.getCustomerProfileByUserId(userId);
         if (!customerProfile) {
             return res.status(404).send({ message: 'Customer Profile not found.' });
         }
-        customerProfile.contact = contact;
+        customerProfile.contact =  await contact;
+
+        
         return res.status(200).send(customerProfile);
     }
     catch (error) {
@@ -322,7 +328,7 @@ const getAllProfiles = async (req, res) => {
  * @returns 
  */
 const updateVendorProfile = async (req, res) => {
-    console.log(res.body);
+    console.log("Data Recieved from Backend is : \n\n\n",req.body);
     if (!req.body) {
         return res.status(400).send({
             message: "Data to update can not be empty!"
@@ -331,8 +337,13 @@ const updateVendorProfile = async (req, res) => {
 
     try{
         const vendorProfileId = req.params.id;
-        const vendorProfileDetails = req.body;
-        const updatedVendorProfile = await ProfileService.updateVendorProfile(vendorProfileId, vendorProfileDetails);
+        // const vendorProfileDetails = req.body;
+
+        const userDetails = req.body.userDetails;
+        const vendorDetails = req.body.profileDetails;
+        const contactDetails = req.body.contactDetails;
+        const isCreate = req.body.isCreate;
+        const updatedVendorProfile = await ProfileService.updateVendorProfile(vendorProfileId, userDetails, vendorDetails, contactDetails, req.user.userid , isCreate);
         return res.status(200).send({updatedVendorProfile, message:"Successfully updated "});
     
     }

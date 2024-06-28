@@ -1,3 +1,4 @@
+const app = require('../config/serverConfig.js');
 const db =  require('../models/index.js');
 
 const AppointmentModel = db.AppointmentModel;
@@ -17,6 +18,50 @@ const createAppointment = async (appointment) => {
     }
 }
 
+// /**
+//  * Get Appointment by ID
+//  * @param {number} appointmentId - Appointment ID
+//  * @returns {Object} - The Appointment object
+//  * @throws {Error} - Throws error if the operation fails
+//  */
+// const getAppointmentById = async (appointmentId) => {
+//     try {
+//         return await AppointmentModel.findByPk(appointmentId,{
+//             include: [
+//                 {
+//                     model: db.ServiceModel,
+//                     as: 'service',
+//                     attributes: ['name', 'price'], // Include only name and price from Service
+//                 },
+//                 {
+//                     model: db.CustomerProfileModel,
+//                     as: 'customer_profile',
+//                     // attributes: [], // Adjust attributes if needed or exclude all fields
+//                 },
+//                 {
+//                     model: db.VendorProfileModel,
+//                     as: 'vendor_profile',
+//                     attributes: [ 'businessname', 'businesstype'], // Include only required fields from VendorProfile
+//                 },
+//                 {
+//                     model: db.QueueModel,
+//                     as: 'queue',
+//                     attributes: ['queueID', 'currentQueueSize', 'averageServiceTime', 'queueStartTime', 'queueEndTime', 'queueStatus'], // Include all fields from Queue
+//                     include: [
+//                         {
+//                             model: db.AppointmentModel,
+//                             as: 'appointments',
+//                             attributes: ['appointmentID', 'appointmentDateTime', 'startTime', 'endTime', 'appointmentStatus'], // Include necessary fields from Appointments
+//                         },
+//                     ],
+//                 },
+//             ],
+//         });
+//     } catch (error) {
+//         console.error("Error fetching appointment:", error);
+//         throw new Error("Failed to fetch appointment.");
+//     }
+// }
 /**
  * Get Appointment by ID
  * @param {number} appointmentId - Appointment ID
@@ -25,12 +70,113 @@ const createAppointment = async (appointment) => {
  */
 const getAppointmentById = async (appointmentId) => {
     try {
-        return await AppointmentModel.findByPk(appointmentId,);
+        const appointment = await db.AppointmentModel.findByPk(appointmentId, {
+            include: [
+                {
+                    model: db.ServiceModel,
+                    as: 'service',
+                    attributes: ['name', 'price'], // Include only name and price from Service
+                },
+                {
+                    model: db.VendorProfileModel,
+                    as: 'vendor_profile',
+                    attributes: [ 'businessname', 'businesstype'], // Include only required fields from VendorProfile
+                },
+                {
+                    model: db.QueueModel,
+                    as: 'queue',
+                    attributes: ['queueID', 'currentQueueSize', 'averageServiceTime', 'queueStartTime', 'queueEndTime', 'queueStatus'], // Include all fields from Queue
+                    include: [
+                        {
+                            model: db.AppointmentModel,
+                            as: 'appointments',
+                            attributes: ['appointmentID', 'appointmentDateTime', 'startTime', 'endTime', 'appointmentStatus'], // Include necessary fields from Appointments
+                        },
+                    ],
+                },
+            ],
+        });
+
+        if (!appointment) {
+            throw new Error('Appointment not found');
+        }
+
+        const queueAppointments = appointment.queue.appointments;
+        const sortedAppointments = queueAppointments.sort((a, b) => new Date(a.appointmentDateTime) - new Date(b.appointmentDateTime));
+        const currentPosition = sortedAppointments.findIndex(app => app.appointmentID === appointmentId) + 1; // 1-based index
+        const remainingAppointments = sortedAppointments.slice(currentPosition);
+
+        return {
+            appointment: {
+                id: appointment.appointmentID,
+                dateTime: appointment.appointmentDateTime,
+                status: appointment.appointmentStatus,
+                position: currentPosition,
+                remainingAppointments: remainingAppointments.length,
+                service: {
+                    name: appointment.service.name,
+                    price: appointment.service.price,
+                },
+                customer: {
+                    profile: appointment.customer_profile, // Include all fields from CustomerProfile if needed
+                },
+                vendor: {
+                    name: appointment.vendor_profile.name,
+                    businessname: appointment.vendor_profile.businessname,
+                    businesstype: appointment.vendor_profile.businesstype,
+                },
+                queue: {
+                    queueID: appointment.queue.queueID,
+                    currentQueueSize: appointment.queue.currentQueueSize,
+                    averageServiceTime: appointment.queue.averageServiceTime,
+                    queueStartTime: appointment.queue.queueStartTime,
+                    queueEndTime: appointment.queue.queueEndTime,
+                    queueStatus: appointment.queue.queueStatus,
+                    appointments: sortedAppointments.map(app => ({
+                        appointmentID: app.appointmentID,
+                        appointmentDateTime: app.appointmentDateTime,
+                        startTime: app.startTime,
+                        endTime: app.endTime,
+                        appointmentStatus: app.appointmentStatus,
+                    })),
+                },
+            },
+        };
     } catch (error) {
         console.error("Error fetching appointment:", error);
         throw new Error("Failed to fetch appointment.");
     }
-}
+};
+
+/**
+ * Get Queue Status by Appointment Id
+ * @param {number} appointmentId - Appointment ID
+ * @returns {Object} - The Queue object
+ * @throws {Error} - Throws error if the operation fails
+ */
+const getQueueStatusByAppointmentId = async (appointmentId) => {
+    try {
+        const appointment = await AppointmentModel.findByPk(appointmentId, {
+            include: [
+                {
+                    model: db.QueueModel,
+                    as: 'queue',
+                    attributes: ['queueStatus'], // Include only queueStatus from Queue
+                },
+            ],
+        });
+
+        if (!appointment || !appointment.queue) {
+            throw new Error('Appointment or Queue not found');
+        }
+
+        return appointment.queue.queueStatus;
+    } catch (error) {
+        console.error("Error fetching queue status:", error);
+        throw new Error("Failed to fetch queue status.");
+    }
+};
+
 
 /**
  * Update Appointment by ID
@@ -188,8 +334,6 @@ const getNumberOfAppointmentsInQueueByStatus = async (queueId, status) => {
 }
 
 
-
-
 /**
  * Calculate Customer Position in the Queue
  */
@@ -199,11 +343,10 @@ const getCustomerAppointmentPosition = async (queueid,appointmentId) => {
         const appointments = await AppointmentModel.findAll({
             where: { queueid: queueid },
             order: [['appointmentDateTime', 'ASC']],
-            attributes: ['appointmentid', 'appointmentDateTime']
+            attributes: ['appointmentID', 'appointmentDateTime']
         });
 
-        // Find the index of the appointment with the given appointmentId
-        const position = appointments.findIndex(appointment => appointment.appointmentid === appointmentId);
+        const position = appointments.findIndex(appointment => appointment.appointmentID === appointmentId);
 
         // Return the position + 1 to represent the customer's turn (1-based index)
         return position === -1 ? null : position + 1;
@@ -229,4 +372,6 @@ module.exports = {
     getUpcomingAppointments,
     getNumberOfAppointmentsInQueue,
     getNumberOfAppointmentsInQueueByStatus,
+    getCustomerAppointmentPosition,
+    getQueueStatusByAppointmentId
 };

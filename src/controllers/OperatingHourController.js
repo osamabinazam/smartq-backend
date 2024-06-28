@@ -75,7 +75,8 @@ const updateOperatingHours = async (req, res) => {
  * @param {Object} res - Express response object
  */
 const deleteOperatingHours = async (req, res) => {
-    const operatingHoursId = req.params.operatingHoursId;
+    const operatingHoursId = req.params.id;
+    console.log("first", operatingHoursId)
     try {
         const deletedRows = await OperatingHourService.deleteOperatingHours(operatingHoursId);
         res.status(200).json({ message: `Deleted ${deletedRows} operating hours` });
@@ -92,5 +93,9 @@ const deleteOperatingHours = async (req, res) => {
  * Export the OperatingHourController
  */
 module.exports = {
-    createOperatingHours
+    createOperatingHours,
+    getOperatingHoursByProfileId,
+    updateOperatingHours,
+    deleteOperatingHours
+
 };

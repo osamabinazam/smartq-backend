@@ -132,6 +132,7 @@ const updateService = async (serviceId, serviceDetails) => {
  */
 
 const deleteService = async (serviceId) => {
+    
     try {
         const deletedRows = await Service.destroy({ where: { serviceid: serviceId } });
         if (deletedRows === 0) {
@@ -140,6 +141,19 @@ const deleteService = async (serviceId) => {
         return deletedRows;
     } catch (error) {
         console.error("Error deleting service:", error);
+        throw error;
+    }
+}
+
+/**
+ * Check if service exists
+ */
+const checkServiceExists = async (vendorprofileid, categoryid) => {
+    try {
+        const service = await Service.findOne({ where: { vendorprofileid, categoryid } });
+        return service ? true : false;
+    } catch (error) {
+        console.error("Error checking service:", error);
         throw error;
     }
 }
@@ -155,5 +169,6 @@ module.exports = {
     getServicesByCategory,
     updateService,
     deleteService,
+    checkServiceExists
 
 };

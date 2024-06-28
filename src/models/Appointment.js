@@ -25,7 +25,7 @@ const AppointmentModel = (sequelize) => {
       allowNull: false,
       comment: 'Unique identifier for the appointment'
     },
-    appointmentDateTime: {
+    appointmentDateTim: {
       type: DataTypes.DATE,
       allowNull: false,
       comment: 'Scheduled datetime for the appointment'

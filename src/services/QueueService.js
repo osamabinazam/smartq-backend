@@ -91,13 +91,14 @@ const deleteQueue = async (queueId) => {
 const getQueueByVendorId = async (vendorId) => {
     try {
 
-
+        console.log("Vendor is Is : ", vendorId)
         const queueData = await QueueModel.findOne({
             where: { vendorprofileid: vendorId, queueStatus:'active'}, 
             order: [['createdAt', 'DESC']],
             include: ['appointments', 'services']
         });
 
+        console.log("queue Data is  :  " , queueData)
 
         const noOfRemaingAppointments = await AppointmentService.getNumberOfAppointmentsInQueueByStatus(queueData.queueID, 'scheduled');
 
@@ -165,7 +166,24 @@ const getQueuesByQueueStatus = async (queueStatus, vid) => {
             where: { queueStatus: queueStatus, vendorprofileid:vid},
             order: [['createdAt', 'DESC']],
             include: [
-                'appointments', 'services'
+                {
+                    model: db.AppointmentModel,
+                    as: 'appointments',
+                    include: [
+                        {
+                            model: db.CustomerProfileModel,
+                            as: 'customer_profile'
+                        },
+                        {
+                            model: db.ServiceModel,
+                            as: 'service'
+                        }
+                    ]
+                },
+                {
+                    model: db.ServiceModel,
+                    as: 'services'
+                }
             ]
         });
     } catch (error) {

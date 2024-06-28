@@ -15,5 +15,6 @@ router.get('/status', authenticateToken, authorizeRoles('vendor', 'customer'), Q
 router.get('/inactive', authenticateToken, authorizeRoles('vendor' , 'customer'), QueueController.getFutureQueues);
 
 
+
 module.exports = router;
 

@@ -10,6 +10,8 @@ const ProfileService = require('../services/ProfileService.js');
 
 const createLocation = async (req, res) => {
 
+    console.log("Response From Location Frontend : ", req.body)
+
     if (!req.body.address || !req.body.city || !req.body.state || !req.body.postalcode || !req.body.longitude || !req.body.latitude) {
         return res.status(400).json({
             message: 'All fields are required',
@@ -199,6 +201,8 @@ const getLocationsByVendorProfileId = async (req, res) => {
  * @returns {object} location object
  */
 const updateLocation = async (req, res) => {
+
+    console.log("Response From Location Frontend : ", req.body)
     const id = req.params.id;
     if (!req.params.id) {
         return res.status(400).json({
